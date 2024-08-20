@@ -1,6 +1,5 @@
 package com.earthdefender.earthcpr.response;
 
-import com.smusoak.restapi.dto.ErrorCodeDto;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
