@@ -2,6 +2,7 @@ package com.earthdefender.earthcpr.service;
 
 import com.earthdefender.earthcpr.DTO.SavingsProductDTO;
 import com.earthdefender.earthcpr.DTO.ShinhanApiDTO;
+import com.earthdefender.earthcpr.DTO.UserDTO;
 import com.earthdefender.earthcpr.response.CustomException;
 import com.earthdefender.earthcpr.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,17 @@ public class ApiService {
     @Value("${shinhan.api.key}")
     private String shinhanApiKey;
 
+    public <T, R> Mono<R> postMemberRequest(String uri, T body, Class<R> responseType) {
+        if (body instanceof UserDTO.UserRequest) {
+            ((UserDTO.UserRequest) body).setApiKey(shinhanApiKey);
+        }
+        return webClient.post()
+                .uri(uri)
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(responseType);
+    }
+
     public <T, R> Mono<R> postRequest(String uri, T body, Class<R> responseType) {
         if (body instanceof ShinhanApiDTO.RequestHeader) {
             // uri 끝이 api 서비스명
@@ -47,6 +59,8 @@ public class ApiService {
                     .build());
             // 로깅하기
         }
+
+
 
         return webClient.post()
                 .uri(uri)

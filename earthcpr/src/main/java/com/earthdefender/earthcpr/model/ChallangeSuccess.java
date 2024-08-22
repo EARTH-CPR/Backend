@@ -1,0 +1,28 @@
+package com.earthdefender.earthcpr.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@ToString
+public class ChallangeSuccess {
+    @Id
+    @GeneratedValue
+    private long id;
+
+    @ManyToOne
+    @Column(name="savings_count_id")
+    private SavingsProduct saving;
+
+    @ManyToOne
+    @JoinColumn(name = "challange_id")
+    private Challange challange;
+
+    private LocalDateTime challande_success_date;
+
+}

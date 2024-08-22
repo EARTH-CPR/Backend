@@ -19,5 +19,4 @@ public class SavingsProduct {
     private Long id;
     private String accountTypeUniqueNo;
     private BigDecimal interestInterestRate;
-
 }
