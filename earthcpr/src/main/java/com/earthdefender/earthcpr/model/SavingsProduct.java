@@ -3,6 +3,7 @@ package com.earthdefender.earthcpr.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Table(name = "savings_product")
 public class SavingsProduct {
     @Id
@@ -20,4 +22,6 @@ public class SavingsProduct {
     private String accountTypeUniqueNo;
     private BigDecimal interestInterestRate;
 
+    @OneToMany
+    private List<Challenge> challengeList;
 }
