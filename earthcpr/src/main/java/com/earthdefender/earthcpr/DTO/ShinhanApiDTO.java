@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 public class ShinhanApiDTO {
 
     @Data
-    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RequestHeader {

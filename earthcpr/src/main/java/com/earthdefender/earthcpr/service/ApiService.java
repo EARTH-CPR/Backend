@@ -1,6 +1,5 @@
 package com.earthdefender.earthcpr.service;
 
-import com.earthdefender.earthcpr.DTO.SavingsProductDTO;
 import com.earthdefender.earthcpr.DTO.ShinhanApiDTO;
 import com.earthdefender.earthcpr.DTO.UserDTO;
 import com.earthdefender.earthcpr.response.CustomException;
