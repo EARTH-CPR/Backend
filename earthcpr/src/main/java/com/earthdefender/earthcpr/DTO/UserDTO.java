@@ -13,10 +13,6 @@ public class UserDTO {
     @Data
     @NoArgsConstructor
     public static class UserRequest {
-        @JsonProperty("userId")
-        private String login_id;
-        @JsonProperty("apiKey")
-        private String apiKey;
         @JsonProperty("password")
         private String password;
         @JsonProperty("userNickname")
@@ -32,6 +28,24 @@ public class UserDTO {
         private String login_id;
         @JsonProperty("apiKey")
         private String apiKey;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserData{
+        private String login_id;
+        private String apiKey;
+        private String password;
+        private String user_nickname;
+
+        public UserShinhanRequest toShinhanRequest(){
+            return UserShinhanRequest.builder()
+                    .login_id(login_id)
+                    .apiKey(apiKey)
+                    .build();
+        }
     }
 
     @Data

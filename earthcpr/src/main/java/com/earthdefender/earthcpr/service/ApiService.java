@@ -28,16 +28,6 @@ public class ApiService {
     @Value("${shinhan.api.key}")
     private String shinhanApiKey;
 
-    public <T, R> Mono<R> postMemberRequest(String uri, T body, Class<R> responseType) {
-        if (body instanceof UserDTO.UserRequest) {
-            ((UserDTO.UserRequest) body).setApiKey(shinhanApiKey);
-        }
-        return webClient.post()
-                .uri(uri)
-                .bodyValue(body)
-                .retrieve()
-                .bodyToMono(responseType);
-    }
 
     public <T, R> Mono<R> postRequest(String uri, T body, Class<R> responseType) {
         if (body instanceof ShinhanApiDTO.RequestHeader) {

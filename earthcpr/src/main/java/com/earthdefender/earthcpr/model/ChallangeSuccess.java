@@ -16,7 +16,7 @@ public class ChallangeSuccess {
     private long id;
 
     @ManyToOne
-    @Column(name="savings_count_id")
+    @JoinColumn(name="savings_product_id")
     private SavingsProduct saving;
 
     @ManyToOne
