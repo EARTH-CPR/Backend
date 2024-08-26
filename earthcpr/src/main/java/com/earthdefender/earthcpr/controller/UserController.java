@@ -1,6 +1,7 @@
 package com.earthdefender.earthcpr.controller;
 
 import com.earthdefender.earthcpr.DTO.UserDTO;
+import com.earthdefender.earthcpr.response.ApiResponseEntity;
 import com.earthdefender.earthcpr.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,14 +16,15 @@ import reactor.core.publisher.Mono;
 import java.util.SortedMap;
 
 @RestController
-@RequestMapping("/api/v1/member")
+@RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createUser(@Valid @RequestBody UserDTO.UserData userdata) {
-        return userService.createUser(userdata);
+    public ResponseEntity<ApiResponseEntity> createUser(@Valid @RequestBody UserDTO.UserData userdata) {
+        userService.createUser(userdata);
+        return ApiResponseEntity.toResponseEntity();
     }
 
 

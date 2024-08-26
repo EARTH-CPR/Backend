@@ -35,14 +35,13 @@ public class UserDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserData{
-        private String login_id;
-        private String apiKey;
+        private String loginId;
         private String password;
-        private String user_nickname;
+        private String userNickname;
 
-        public UserShinhanRequest toShinhanRequest(){
+        public UserShinhanRequest toShinhanRequest(String apiKey){
             return UserShinhanRequest.builder()
-                    .login_id(login_id)
+                    .login_id(loginId)
                     .apiKey(apiKey)
                     .build();
         }
