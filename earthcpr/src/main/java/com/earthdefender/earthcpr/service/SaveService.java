@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class SaveService {
     private final ApiService apiService;
 
     @Transactional
-    public ResponseEntity<ApiResponseEntity> createSavingsProduct(SavingProductDTO.ProductData productData) {
+    public void createSavingsProduct(SavingProductDTO.ProductData productData) {
 
         List<Challenge> challegeList = new ArrayList<>();
         Mono<SavingProductDTO.ShinhanApiCreateResponse> shinhanApiResponseMono
@@ -52,20 +53,17 @@ public class SaveService {
             SavingProductDTO.ShinhanApiCreateResponse shinhanApiCreateResponse = shinhanApiResponseMono.block();
             savingsProductRepository.save(SavingsProduct.builder()
                     .accountTypeUniqueNo(shinhanApiCreateResponse.getRec().getAccountTypeUniqueNo())
-                    .interestInterestRate(productData.getIncreaseInterestRate())
+                    .interestInterestRate(new BigDecimal(productData.getIncreaseInterestRate()))
                     .challengeList(challegeList)
                     .build());
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
-
-        return ApiResponseEntity.toResponseEntity();
     }
 
-    public SavingProductDTO.GetSavingProductsResponse getSavingProductList() {
-        SavingProductDTO.GetSavingProductsResponse response = new SavingProductDTO.GetSavingProductsResponse();
-        response.setProducts(new ArrayList<>());
+    public List<SavingProductDTO.ProductData> getSavingProductList() {
+        List<SavingProductDTO.ProductData> response = new ArrayList<>();
         Mono<SavingProductDTO.ShinhanApiGetSavingProductsResponse> shinhanApiResponseMono
                 = apiService.postRequest("/edu/savings/inquireSavingsProducts", new ShinhanApiDTO.RequestHeader(), SavingProductDTO.ShinhanApiGetSavingProductsResponse.class);
 
@@ -88,7 +86,7 @@ public class SaveService {
                                         .verification(challenge.getVerification())
                                 .build());
                     }
-                    response.getProducts().add(shinhanApiResponseData.toProductData(savingsProduct.getInterestInterestRate(), challengeList));
+                    response.add(shinhanApiResponseData.toProductData(savingsProduct.getInterestInterestRate().toString(), challengeList));
                 }
             }
 
