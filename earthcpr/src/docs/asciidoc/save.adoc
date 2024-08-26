@@ -1,0 +1,7 @@
+== Save
+
+=== 적금 상품 등록
+operation::save-controller-test/create-savings-product-test[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 적금 상품 조회
+operation::save-controller-test/get-saving-products-test[snippets='http-request,http-response,response-fields']
