@@ -1,0 +1,8 @@
+= EarthCPR API Document
+:doctype: book
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+include::save.adoc[]

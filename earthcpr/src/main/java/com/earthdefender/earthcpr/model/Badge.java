@@ -14,5 +14,6 @@ public class Badge {
     private long id;
 
     private String name;
+    @Column(name="badge_condition")
     private int condition;
 }
