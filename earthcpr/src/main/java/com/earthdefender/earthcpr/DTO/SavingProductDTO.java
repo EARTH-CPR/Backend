@@ -35,12 +35,12 @@ public class SavingProductDTO {
         private Long maxSubscriptionBalance;
 
         @JsonProperty("interestRate")
-        private BigDecimal interestRate;
+        private String interestRate;
 
         @JsonProperty("rateDescription")
         private String rateDescription;
 
-        public ShinhanApiCreateRequest(ShinhanApiDTO.RequestHeaderParam header, String accountName, String bankCode, String accountDescription, String subscriptionPeriod, Long minSubscriptionBalance, Long maxSubscriptionBalance, BigDecimal interestRate, String rateDescription) {
+        public ShinhanApiCreateRequest(ShinhanApiDTO.RequestHeaderParam header, String accountName, String bankCode, String accountDescription, String subscriptionPeriod, Long minSubscriptionBalance, Long maxSubscriptionBalance, String interestRate, String rateDescription) {
             super(header);
             this.accountName = accountName;
             this.bankCode = bankCode;
@@ -125,12 +125,12 @@ public class SavingProductDTO {
         private Long maxSubscriptionBalance;
 
         @JsonProperty("interestRate")
-        private BigDecimal interestRate;
+        private String interestRate;
 
         @JsonProperty("rateDescription")
         private String rateDescription;
 
-        public ProductData toProductData(BigDecimal increaseInterestRate, List<ChallengeDTO.ChallengeData> challengeList) {
+        public ProductData toProductData(String increaseInterestRate, List<ChallengeDTO.ChallengeData> challengeList) {
             return ProductData.builder()
                     .accountName(this.accountName)
                     .bankCode(this.bankCode)
@@ -151,7 +151,7 @@ public class SavingProductDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProductData {
-        private BigDecimal increaseInterestRate;
+        private String increaseInterestRate;
         private List<ChallengeDTO.ChallengeData> challengeList;
 
         // Shinhan API Request를 위한 데이터
@@ -161,7 +161,7 @@ public class SavingProductDTO {
         private String subscriptionPeriod;
         private Long minSubscriptionBalance;
         private Long maxSubscriptionBalance;
-        private BigDecimal interestRate;
+        private String interestRate;
         private String rateDescription;
 
         public ShinhanApiCreateRequest toShinhanApiRequest() {
