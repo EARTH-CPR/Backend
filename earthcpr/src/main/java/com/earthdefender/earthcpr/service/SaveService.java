@@ -2,15 +2,22 @@ package com.earthdefender.earthcpr.service;
 
 import com.earthdefender.earthcpr.DTO.ChallengeDTO;
 import com.earthdefender.earthcpr.DTO.SavingProductDTO;
+import com.earthdefender.earthcpr.DTO.SavingsAccountDTO;
 import com.earthdefender.earthcpr.DTO.ShinhanApiDTO;
 import com.earthdefender.earthcpr.model.Challenge;
+import com.earthdefender.earthcpr.model.SavingsAccount;
 import com.earthdefender.earthcpr.model.SavingsProduct;
+import com.earthdefender.earthcpr.model.User;
 import com.earthdefender.earthcpr.repository.ChallengeRepository;
+import com.earthdefender.earthcpr.repository.SavingsAccountRepository;
 import com.earthdefender.earthcpr.repository.SavingsProductRepository;
 
+import com.earthdefender.earthcpr.repository.UserRepository;
 import com.earthdefender.earthcpr.response.ApiResponseEntity;
 import com.earthdefender.earthcpr.response.CustomException;
 import com.earthdefender.earthcpr.response.ErrorCode;
+import com.mysql.cj.Session;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +37,10 @@ public class SaveService {
 
     private final SavingsProductRepository savingsProductRepository;
     private final ChallengeRepository challengeRepository;
+    private final UserRepository userRepository;
+    private final SavingsAccountRepository savingsAccountRepository;
     private final ApiService apiService;
+
 
     @Transactional
     public void createSavingsProduct(SavingProductDTO.ProductData productData) {
@@ -61,6 +71,43 @@ public class SaveService {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
     }
+
+    @Transactional
+    public void createSavingsAccount(SavingsAccountDTO.ProductData productData, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            throw new CustomException(ErrorCode.NOT_FOUND);
+        }
+
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND);
+        }
+
+        Optional<SavingsProduct> productOptional = savingsProductRepository.findByAccountTypeUniqueNo(productData.getAccountTypeUniqueNo());
+        if (productOptional.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND);
+        }
+
+        Mono<SavingsAccountDTO.CreateAccountResponse> responseMono = apiService.PostRequestUserKey(
+                "/edu/savings/createAccount", productData.toCreateAccountRequest(), SavingsAccountDTO.CreateAccountResponse.class, session
+        );
+
+        try {
+            SavingsAccountDTO.CreateAccountResponse response = responseMono.block();
+            SavingsAccount savingsAccount = SavingsAccount.builder()
+                    .user(userOptional.get())
+                    .savingProduct(productOptional.get())
+                    .account_no(response.getRec().getAccountNo())
+                    .additional_interest_rate(Double.parseDouble(response.getRec().getInterestRate()))
+                    .build();
+            savingsAccountRepository.save(savingsAccount);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+    }
+
 
     public List<SavingProductDTO.ProductData> getSavingProductList() {
         List<SavingProductDTO.ProductData> response = new ArrayList<>();

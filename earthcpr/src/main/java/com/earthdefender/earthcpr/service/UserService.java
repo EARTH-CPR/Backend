@@ -47,6 +47,7 @@ public class UserService {
             return ResponseEntity.badRequest().body("Invalid login credentials");
         }
         session.setAttribute("userId", user.getId());
+        session.setAttribute("userKey", user.getUser_key());
         return ResponseEntity.ok("Login successful");
     }
 

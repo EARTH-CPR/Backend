@@ -1,8 +1,11 @@
 package com.earthdefender.earthcpr.controller;
 
 import com.earthdefender.earthcpr.DTO.SavingProductDTO;
+import com.earthdefender.earthcpr.DTO.SavingsAccountDTO;
 import com.earthdefender.earthcpr.response.ApiResponseEntity;
 import com.earthdefender.earthcpr.service.SaveService;
+import com.mysql.cj.Session;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +32,11 @@ public class SaveController {
     public ResponseEntity<ApiResponseEntity> getSavingProductList() {
         List<SavingProductDTO.ProductData> savingProductsResponseList =  saveService.getSavingProductList();
         return ApiResponseEntity.toResponseEntity(savingProductsResponseList);
+    }
+
+    @PostMapping("/create/savingsaccount")
+    public ResponseEntity<ApiResponseEntity> createSavingsAccount(@Valid @RequestBody SavingsAccountDTO.ProductData productData,HttpSession session) {
+        saveService.createSavingsAccount(productData, session);
+        return ApiResponseEntity.toResponseEntity();
     }
 }

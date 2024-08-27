@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name = "savings_count")
-public class SavingsCount {
+@Table(name = "savings_account")
+public class SavingsAccount {
     @Id
     @GeneratedValue
     private Long id;
