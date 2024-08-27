@@ -62,4 +62,11 @@ public class UserDTO {
         @JsonIgnore
         private String user_nickname;
     }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserLoginRequest {
+        private String login_id;
+        private String password;
+    }
 }

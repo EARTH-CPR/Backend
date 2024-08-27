@@ -23,6 +23,6 @@ public class ChallangeSuccess {
     @JoinColumn(name = "challange_id")
     private Challange challange;
 
-    private LocalDateTime challande_success_date;
+    private LocalDateTime challange_success_date;
 
 }

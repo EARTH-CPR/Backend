@@ -2,6 +2,7 @@ package com.earthdefender.earthcpr.controller;
 
 import com.earthdefender.earthcpr.DTO.UserDTO;
 import com.earthdefender.earthcpr.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,13 @@ public class UserController {
         return userService.createUser(userdata);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@Valid @RequestBody UserDTO.UserLoginRequest loginRequest, HttpSession session) {
+        return userService.loginUser(loginRequest,session);
+    }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutUser(HttpSession session) {
+        return userService.logoutUser(session);
+    }
 }

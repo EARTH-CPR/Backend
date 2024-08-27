@@ -5,10 +5,9 @@ import com.earthdefender.earthcpr.service.FriendService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/friend")
@@ -20,4 +19,9 @@ public class FriendController {
     public ResponseEntity<String> addFriend(@Valid @RequestBody FriendDTO.FriendData friendData) {
         return friendService.addFriend(friendData);
     }
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteFriend(@Valid @RequestBody FriendDTO.FriendData friendData) {
+        return friendService.deleteFriend(friendData);
+    }
+
 }

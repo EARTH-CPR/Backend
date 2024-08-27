@@ -5,6 +5,7 @@ import com.earthdefender.earthcpr.model.User;
 import com.earthdefender.earthcpr.repository.UserRepository;
 import com.earthdefender.earthcpr.response.CustomException;
 import com.earthdefender.earthcpr.response.ErrorCode;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +43,18 @@ public class UserService {
         }
 
         return ResponseEntity.ok("User creation in progress");
+    }
+    public ResponseEntity<String> loginUser(UserDTO.UserLoginRequest loginRequest, HttpSession session) {
+        User user = userRepository.findByLoginId(loginRequest.getLogin_id());
+        if (user == null || !user.getPassword().equals(loginRequest.getPassword())) {
+            return ResponseEntity.badRequest().body("Invalid login credentials");
+        }
+        session.setAttribute("userId", user.getId());
+        return ResponseEntity.ok("Login successful");
+    }
+
+    public ResponseEntity<String> logoutUser(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.ok("Logout successful");
     }
 }
