@@ -26,4 +26,4 @@ COPY --from=build /app/build/libs/*.jar /app/earthcpr.jar
 
 EXPOSE 8080 
 ENTRYPOINT ["java"] 
-CMD ["-jar", "earthcpr.jar"]
+CMD ["-jar", "earthcpr.jar", "--spring.profiles.active=local"]
