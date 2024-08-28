@@ -20,8 +20,8 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Create directory for application.yml
-      run: mkdir -p ./Backend/earthcpr/src/main/resources
+    # - name: Create directory for application.yml
+    #   run: mkdir -p ./Backend/earthcpr/src/main/resources
 
     - name: Set up application-local.properties
       run: echo "${{ secrets.APPLICATION }}" > ./Backend/earthcpr/src/main/resources/application-local.properties
