@@ -2,14 +2,31 @@ version: '3'
 
 services:
   earthcpr-backend:
-    build:
-      context: ./earthcpr
+    build: ./earthcpr
     image: earthcpr-backend
     ports:
       - "8080:8080"
     restart: on-failure
+    depends_on:
+      - mysql
     networks:
       - earthcpr_network
+
+  mysql:
+    container_name: mysql-container
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    networks:
+      - earthcpr_network
+    volumes:
+      - mysql_data:/var/lib/mysql  # MySQL 데이터를 저장하는 볼륨
 
 networks:
   earthcpr_network:
