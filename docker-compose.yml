@@ -7,8 +7,6 @@ services:
     ports:
       - "8080:8080"
     restart: on-failure
-    depends_on:
-      - mysql
 
 volumes:
   mysql_data:  # MySQL 데이터를 저장하는 볼륨 정의
