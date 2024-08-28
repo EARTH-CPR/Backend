@@ -41,6 +41,7 @@ jobs:
         PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         HOST: ${{ secrets.EC2_HOST }}
         USER: ${{ secrets.EC2_USER }}
+        PORT: 22
       run: |
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
         ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
