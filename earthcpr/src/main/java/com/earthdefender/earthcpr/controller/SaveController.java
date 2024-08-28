@@ -39,4 +39,10 @@ public class SaveController {
         saveService.createSavingsAccount(productData, session);
         return ApiResponseEntity.toResponseEntity();
     }
+    @PostMapping("/inquire/savingaccount")
+    public ResponseEntity<ApiResponseEntity> getSavingAccountList(@Valid @RequestBody SavingsAccountDTO.ProductData productData, HttpSession session) {
+        SavingsAccountDTO.ProductData productDetail  =  saveService.getSavingProductDetail(productData, session);
+        return ApiResponseEntity.toResponseEntity(productDetail);
+    }
+
 }

@@ -111,7 +111,7 @@ public class SaveService {
         }
     }
 
-
+    //적금 상품 목록 가져오기
     public List<SavingProductDTO.ProductData> getSavingProductList() {
         List<SavingProductDTO.ProductData> response = new ArrayList<>();
         Mono<SavingProductDTO.ShinhanApiGetSavingProductsResponse> shinhanApiResponseMono
@@ -145,5 +145,17 @@ public class SaveService {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
         return response;
+    }
+    //적금 상세 정보 가져오기
+    public SavingsAccountDTO.ProductData getSavingProductDetail(SavingsAccountDTO.ProductData productData,HttpSession session) {
+        Mono<SavingsAccountDTO.ShinhanApiInquireAccountResponse> shinhanApiResponseMono
+                = apiService.PostRequestUserKey("/edu/savings/inquireAccount", productData.toInquireAccountRequest(), SavingsAccountDTO.ShinhanApiInquireAccountResponse.class, session);
+        try {
+            SavingsAccountDTO.ShinhanApiInquireAccountResponse shinhanApiResponse = shinhanApiResponseMono.block();
+            return shinhanApiResponse.getRec().toProductData();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
     }
 }
