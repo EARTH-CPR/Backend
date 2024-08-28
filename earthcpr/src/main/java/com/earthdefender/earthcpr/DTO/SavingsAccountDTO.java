@@ -19,17 +19,10 @@ public class SavingsAccountDTO {
         private String accountTypeUniqueNo;
 
         @JsonProperty("depositBalance")
-        private Long depositBalance;
+        private String depositBalance;
 
         @JsonProperty("withdrawalAccountNo")
         private String withdrawalAccountNo;
-
-        public CreateAccountRequest(ShinhanApiDTO.RequestHeaderParam header, String accountTypeUniqueNo, Long depositBalance, String withdrawalAccountNo) {
-            super(header);
-            this.accountTypeUniqueNo = accountTypeUniqueNo;
-            this.depositBalance = depositBalance;
-            this.withdrawalAccountNo = withdrawalAccountNo;
-        }
     }
 
     @Data
@@ -63,7 +56,6 @@ public class SavingsAccountDTO {
 
         @JsonProperty("withdrawalAccountNo")
         private String withdrawalAccountNo;
-
         @JsonProperty("accountName")
         private String accountName;
 
@@ -81,6 +73,7 @@ public class SavingsAccountDTO {
 
         @JsonProperty("accountExpiryDate")
         private String accountExpiryDate;
+
     }
     @Data
     @Builder
@@ -88,13 +81,13 @@ public class SavingsAccountDTO {
     @AllArgsConstructor
     public static class ProductData {
         private String accountTypeUniqueNo;
-        private Long depositBalance;
         private String withdrawalAccountNo;
+        private String depositBalance;
         public CreateAccountRequest toCreateAccountRequest() {
             return CreateAccountRequest.builder()
-                    .accountTypeUniqueNo(this.accountTypeUniqueNo)
-                    .depositBalance(this.depositBalance)
-                    .withdrawalAccountNo(this.withdrawalAccountNo)
+                    .withdrawalAccountNo(withdrawalAccountNo)
+                    .accountTypeUniqueNo(accountTypeUniqueNo)
+                    .depositBalance(depositBalance)
                     .build();
         }
     }

@@ -30,4 +30,9 @@ public class DemandDepositController {
         demandDepositService.createDemandDepositAccount(productData, session);
         return ApiResponseEntity.toResponseEntity();
     }
+    @PostMapping("/get/depositaccounts")
+    public ResponseEntity<ApiResponseEntity> getDemandDepositAccountList(HttpSession session) {
+        return ApiResponseEntity.toResponseEntity(demandDepositService.getDemandDepositAccounts(session));
+    }
+
 }

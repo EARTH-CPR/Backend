@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 public class DemandDepositProductDTO {
 
     @Data
@@ -35,6 +37,9 @@ public class DemandDepositProductDTO {
         private ResponseData rec;
     }
 
+
+
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -63,6 +68,8 @@ public class DemandDepositProductDTO {
 
         @JsonProperty("accountType")
         private String accountType;
+
+
     }
     @Data
     @Builder
@@ -72,6 +79,7 @@ public class DemandDepositProductDTO {
         private String bankCode;
         private String accountName;
         private String accountDescription;
+
         public CreateRequest toCreateRequest() {
             return CreateRequest.builder()
                     .bankCode(bankCode)

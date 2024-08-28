@@ -73,7 +73,6 @@ public class ApiService {
                     .userKey(session.getAttribute("userKey").toString())
                     .build());
             // 로깅하기
-            System.out.println("PostRequestUserKey: " + body);
         }
         return webClient.post()
                 .uri(uri)

@@ -2,11 +2,13 @@ package com.earthdefender.earthcpr.service;
 
 import com.earthdefender.earthcpr.DTO.DemandDepositAccountDTO;
 import com.earthdefender.earthcpr.DTO.DemandDepositProductDTO;
+import com.earthdefender.earthcpr.DTO.ShinhanApiDTO;
 import com.earthdefender.earthcpr.model.DemandDepositAccount;
 import com.earthdefender.earthcpr.model.DemandDepositProduct;
 import com.earthdefender.earthcpr.repository.DemandDepositAccountRepository;
 import com.earthdefender.earthcpr.repository.DemandDepositProductRepository;
 import com.earthdefender.earthcpr.repository.UserRepository;
+import com.mysql.cj.Session;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -50,6 +56,32 @@ public class DemandDepositService {
         }
     }
 
+    public List<DemandDepositAccountDTO.AccountListData> getDemandDepositAccounts(HttpSession session) {
+        List<DemandDepositAccountDTO.AccountListData> response = new ArrayList<>();
+        Mono<DemandDepositAccountDTO.ShinhanApiGetDepositAccountsResponse> shinhanApiResponseMono = apiService.PostRequestUserKey(
+                "/edu/demandDeposit/inquireDemandDepositAccountList",
+                new ShinhanApiDTO.RequestHeader(),
+                DemandDepositAccountDTO.ShinhanApiGetDepositAccountsResponse.class,
+                session
+        );
+        try{
+            DemandDepositAccountDTO.ShinhanApiGetDepositAccountsResponse shinhanApiGetDepositAccountsResponse = shinhanApiResponseMono.block();
+            for (DemandDepositAccountDTO.AccountListResponseData accountListResponseDataData : shinhanApiGetDepositAccountsResponse.getRec()) {
+                response.add(DemandDepositAccountDTO.AccountListData.builder()
+                        .bankCode(accountListResponseDataData.getBankCode())
+                        .accountNo(accountListResponseDataData.getAccountNo())
+                        .accountName(accountListResponseDataData.getAccountName())
+                        .accountBalance(accountListResponseDataData.getAccountBalance())
+                        .build());
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException("Failed to get demand deposit products");
+        }
+
+        return response;
+    }
+
     @Transactional
     public void createDemandDepositAccount(DemandDepositAccountDTO.ProductData productData, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
@@ -58,7 +90,7 @@ public class DemandDepositService {
         }
 
         Mono<DemandDepositAccountDTO.CreateAccountResponse> responseMono = apiService.PostRequestUserKey(
-                "https://finopenapi.ssafy.io/ssafy/api/v1/edu/demandDeposit/createDemandDepositAccount",
+                "/edu/demandDeposit/createDemandDepositAccount",
                 productData.toCreateAccountRequest(accountTypeUniqueNo),
                 DemandDepositAccountDTO.CreateAccountResponse.class,
                 session

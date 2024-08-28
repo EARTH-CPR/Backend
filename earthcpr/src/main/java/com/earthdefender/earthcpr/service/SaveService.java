@@ -72,7 +72,6 @@ public class SaveService {
         }
     }
 
-    @Transactional
     public void createSavingsAccount(SavingsAccountDTO.ProductData productData, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
@@ -83,16 +82,18 @@ public class SaveService {
         if (userOptional.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND);
         }
-
+        System.out.println("productData: " + productData);
         Optional<SavingsProduct> productOptional = savingsProductRepository.findByAccountTypeUniqueNo(productData.getAccountTypeUniqueNo());
         if (productOptional.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND);
         }
 
         Mono<SavingsAccountDTO.CreateAccountResponse> responseMono = apiService.PostRequestUserKey(
-                "/edu/savings/createAccount", productData.toCreateAccountRequest(), SavingsAccountDTO.CreateAccountResponse.class, session
+                "/edu/savings/createAccount",
+                productData.toCreateAccountRequest(),
+                SavingsAccountDTO.CreateAccountResponse.class,
+                session
         );
-
         try {
             SavingsAccountDTO.CreateAccountResponse response = responseMono.block();
             SavingsAccount savingsAccount = SavingsAccount.builder()
@@ -101,8 +102,10 @@ public class SaveService {
                     .account_no(response.getRec().getAccountNo())
                     .additional_interest_rate(Double.parseDouble(response.getRec().getInterestRate()))
                     .build();
+            System.out.println("savingsAccount: " + savingsAccount);
             savingsAccountRepository.save(savingsAccount);
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(e.getMessage());
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }

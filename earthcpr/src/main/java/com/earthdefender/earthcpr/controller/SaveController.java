@@ -34,7 +34,7 @@ public class SaveController {
         return ApiResponseEntity.toResponseEntity(savingProductsResponseList);
     }
 
-    @PostMapping("/create/savingsaccount")
+    @PostMapping("/create/savingaccount")
     public ResponseEntity<ApiResponseEntity> createSavingsAccount(@Valid @RequestBody SavingsAccountDTO.ProductData productData,HttpSession session) {
         saveService.createSavingsAccount(productData, session);
         return ApiResponseEntity.toResponseEntity();

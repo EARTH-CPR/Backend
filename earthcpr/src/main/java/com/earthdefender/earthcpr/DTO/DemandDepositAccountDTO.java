@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 public class DemandDepositAccountDTO {
 
     @Data
@@ -28,6 +30,52 @@ public class DemandDepositAccountDTO {
         @JsonProperty("REC")
         private AccountResponseData rec;
     }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShinhanApiGetDepositAccountsResponse {
+        @JsonProperty("Header")
+        private ShinhanApiDTO.ResponseHeader header;
+
+        @JsonProperty("REC")
+        private List<AccountListResponseData> rec;
+    }
+
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AccountListResponseData {
+        @JsonProperty("bankCode")
+        private String bankCode;
+        @JsonProperty("accountNo")
+        private String accountNo;
+        @JsonProperty("accountName")
+        private String accountName;
+        @JsonProperty("accountBalance")
+        private String accountBalance;
+
+        public AccountListData toAccountListData() {
+            return AccountListData.builder()
+                    .bankCode(bankCode)
+                    .accountNo(accountNo)
+                    .accountName(accountName)
+                    .accountBalance(accountBalance)
+                    .build();
+        }
+    }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AccountListData {
+        private String bankCode;
+        private String accountNo;
+        private String accountName;
+        private String accountBalance;
+    }
 
     @Data
     @Builder
@@ -42,6 +90,7 @@ public class DemandDepositAccountDTO {
 
         @JsonProperty("currency")
         private Currency currency;
+
     }
 
     @Data
@@ -54,6 +103,7 @@ public class DemandDepositAccountDTO {
 
         @JsonProperty("currencyName")
         private String currencyName;
+
     }
 
     @Data
