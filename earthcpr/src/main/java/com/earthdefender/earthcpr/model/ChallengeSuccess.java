@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @ToString
-public class ChallangeSuccess {
+public class ChallengeSuccess {
     @Id
     @GeneratedValue
     private long id;
@@ -20,8 +20,8 @@ public class ChallangeSuccess {
     private SavingsProduct saving;
 
     @ManyToOne
-    @JoinColumn(name = "challange_id")
-    private Challange challange;
+    @JoinColumn(name = "challenge_id")
+    private Challenge challenge;
 
     private LocalDateTime challange_success_date;
 

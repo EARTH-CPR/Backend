@@ -19,6 +19,11 @@ public class Challenge {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name="badge_id")
+    private Badge badge;
+
     private String name;
     private String info;
     private Long type;

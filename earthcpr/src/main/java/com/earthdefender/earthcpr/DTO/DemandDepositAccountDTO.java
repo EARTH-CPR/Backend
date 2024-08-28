@@ -112,7 +112,6 @@ public class DemandDepositAccountDTO {
     @AllArgsConstructor
     public static class ProductData {
         private String accountTypeUniqueNo;
-
         public CreateAccountRequest toCreateAccountRequest(String accountTypeUniqueNo) {
             return CreateAccountRequest.builder()
                     .accountTypeUniqueNo(accountTypeUniqueNo)
