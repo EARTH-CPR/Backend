@@ -118,9 +118,7 @@ public class SaveControllerTest extends AbstractRestDocsTests {
 
         given(saveService.getSavingProductList()).willReturn(Arrays.asList(productData));
 
-        mockMvc.perform(post("/api/v1/save/get/savingproducts")
-                        .content(objectMapper.writeValueAsString(productData))
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/v1/save/get/savingproducts"))
                 .andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
