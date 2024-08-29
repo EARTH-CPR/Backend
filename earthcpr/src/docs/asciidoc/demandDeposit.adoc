@@ -1,0 +1,4 @@
+== 입출금 & 적금
+
+=== 입출금 상품 등록
+operation::demand-deposit-controller-test/create-demand-deposit-test[snippets='http-request,request-fields,http-response,response-fields']
