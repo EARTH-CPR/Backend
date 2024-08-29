@@ -205,4 +205,20 @@ public class SaveService {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
     }
+    public SavingsAccountDTO.ProductData deleteAccount(SavingsAccountDTO.ProductData productData) {
+        Mono<SavingsAccountDTO.ShinhanApideleteAccountResponse> responseMono = apiService.PostRequestUserKey(
+                "https://finopenapi.ssafy.io/ssafy/api/v1/edu/savings/deleteAccount",
+                productData.toInquireEarlyRequest(),
+                SavingsAccountDTO.ShinhanApideleteAccountResponse.class,
+                productData.getLoginId()
+        );
+
+        try {
+            SavingsAccountDTO.ShinhanApideleteAccountResponse response = responseMono.block();
+            return response.getRec().toProductData();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+    }
 }

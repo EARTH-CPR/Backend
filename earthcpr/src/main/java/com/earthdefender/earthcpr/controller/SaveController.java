@@ -61,4 +61,10 @@ public class SaveController {
         SavingsAccountDTO.ProductData earlyInterest=  saveService.inquireEarlyInterest(productData);
         return ApiResponseEntity.toResponseEntity(earlyInterest);
     }
+    //중도해지
+    @PostMapping("/delete/account")
+    public ResponseEntity<ApiResponseEntity> deleteAccount(@Valid @RequestBody SavingsAccountDTO.ProductData productData) {
+        SavingsAccountDTO.ProductData deleteAccount  =saveService.deleteAccount(productData);
+        return ApiResponseEntity.toResponseEntity(deleteAccount);
+    }
 }

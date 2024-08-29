@@ -107,6 +107,7 @@ public class SavingsAccountDTO {
         private String earlyTerminationDate;
         private String earlyTerminationInterest;
         private String earlyTerminationBalance;
+        private String status;
 
         public CreateAccountRequest toCreateAccountRequest() {
             return CreateAccountRequest.builder()
@@ -137,6 +138,12 @@ public class SavingsAccountDTO {
         }
         public InquireEarlyRequest toInquireEarlyRequest() {
             return InquireEarlyRequest.builder()
+                    .loginId(loginId)
+                    .accountNo(accountNo)
+                    .build();
+        }
+        public deleteAccountRequest toDeleteAccountRequest() {
+            return deleteAccountRequest.builder()
                     .loginId(loginId)
                     .accountNo(accountNo)
                     .build();
@@ -426,6 +433,73 @@ public class SavingsAccountDTO {
                     .accountNo(this.accountNo)
                     .interestRate(this.interestRate)
                     .accountCreateDate(this.accountCreateDate)
+                    .earlyTerminationDate(this.earlyTerminationDate)
+                    .totalBalance(this.totalBalance)
+                    .earlyTerminationInterest(this.earlyTerminationInterest)
+                    .earlyTerminationBalance(this.earlyTerminationBalance)
+                    .build();
+        }
+    }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class deleteAccountRequest extends ShinhanApiDTO.RequestHeader {
+        @JsonProperty("loginId")
+        private String loginId;
+
+        @JsonProperty("accountNo")
+        private String accountNo;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShinhanApideleteAccountResponse {
+        @JsonProperty("Header")
+        private ShinhanApiDTO.ResponseHeader header;
+
+        @JsonProperty("REC")
+        private deleteAccountResponse rec;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class deleteAccountResponse {
+        @JsonProperty("status")
+        private String status;
+
+        @JsonProperty("bankCode")
+        private String bankCode;
+
+        @JsonProperty("bankName")
+        private String bankName;
+
+        @JsonProperty("accountNo")
+        private String accountNo;
+
+        @JsonProperty("accountName")
+        private String accountName;
+
+        @JsonProperty("earlyTerminationDate")
+        private String earlyTerminationDate;
+
+        @JsonProperty("totalBalance")
+        private String totalBalance;
+
+        @JsonProperty("earlyTerminationInterest")
+        private String earlyTerminationInterest;
+
+        @JsonProperty("earlyTerminationBalance")
+        private String earlyTerminationBalance;
+
+        public ProductData toProductData() {
+            return ProductData.builder()
+                    .status(this.status)
+                    .accountNo(this.accountNo)
                     .earlyTerminationDate(this.earlyTerminationDate)
                     .totalBalance(this.totalBalance)
                     .earlyTerminationInterest(this.earlyTerminationInterest)
