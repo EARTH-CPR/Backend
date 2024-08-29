@@ -22,6 +22,7 @@ public class SavingsProduct {
     private String accountTypeUniqueNo;
     private BigDecimal interestInterestRate;
 
-    @OneToMany
+    @ManyToMany
+    @JoinTable(name = "savings_product_challenge")
     private List<Challenge> challengeList;
 }
