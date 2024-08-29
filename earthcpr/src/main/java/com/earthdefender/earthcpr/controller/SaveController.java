@@ -35,14 +35,18 @@ public class SaveController {
     }
 
     @PostMapping("/create/savingaccount")
-    public ResponseEntity<ApiResponseEntity> createSavingsAccount(@Valid @RequestBody SavingsAccountDTO.ProductData productData,HttpSession session) {
-        saveService.createSavingsAccount(productData, session);
+    public ResponseEntity<ApiResponseEntity> createSavingsAccount(@Valid @RequestBody SavingsAccountDTO.ProductData productData) {
+        saveService.createSavingsAccount(productData);
         return ApiResponseEntity.toResponseEntity();
     }
     @PostMapping("/inquire/savingaccount")
-    public ResponseEntity<ApiResponseEntity> getSavingAccountList(@Valid @RequestBody SavingsAccountDTO.ProductData productData, HttpSession session) {
-        SavingsAccountDTO.ProductData productDetail  =  saveService.getSavingProductDetail(productData, session);
+    public ResponseEntity<ApiResponseEntity> getSavingAccountList(@Valid @RequestBody SavingsAccountDTO.ProductData productData) {
+        SavingsAccountDTO.ProductData productDetail  =  saveService.getSavingProductDetail(productData);
         return ApiResponseEntity.toResponseEntity(productDetail);
     }
-
+    @PostMapping("/inquire/payment")
+    public ResponseEntity<ApiResponseEntity> getPaymentList(@Valid @RequestBody SavingsAccountDTO.ProductData productData) {
+        List<SavingsAccountDTO.PaymentInfo> paymentList =  saveService.getPaymentList(productData);
+        return ApiResponseEntity.toResponseEntity(paymentList);
+    }
 }

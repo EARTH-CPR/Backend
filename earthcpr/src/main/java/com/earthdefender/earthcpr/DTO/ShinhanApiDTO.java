@@ -1,5 +1,6 @@
 package com.earthdefender.earthcpr.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ public class ShinhanApiDTO {
     public static class RequestHeader {
         @JsonProperty("Header")
         private RequestHeaderParam header;
+
     }
 
     @Builder

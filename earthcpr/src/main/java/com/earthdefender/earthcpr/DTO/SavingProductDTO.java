@@ -40,17 +40,7 @@ public class SavingProductDTO {
         @JsonProperty("rateDescription")
         private String rateDescription;
 
-        public ShinhanApiCreateRequest(ShinhanApiDTO.RequestHeaderParam header, String accountName, String bankCode, String accountDescription, String subscriptionPeriod, Long minSubscriptionBalance, Long maxSubscriptionBalance, String interestRate, String rateDescription) {
-            super(header);
-            this.accountName = accountName;
-            this.bankCode = bankCode;
-            this.accountDescription = accountDescription;
-            this.subscriptionPeriod = subscriptionPeriod;
-            this.minSubscriptionBalance = minSubscriptionBalance;
-            this.maxSubscriptionBalance = maxSubscriptionBalance;
-            this.interestRate = interestRate;
-            this.rateDescription = rateDescription;
-        }
+
     }
 
     @Data

@@ -15,8 +15,19 @@ public class DemandDepositAccountDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CreateAccountRequest extends ShinhanApiDTO.RequestHeader {
+        @JsonProperty("loginId")
+        private String loginId;
         @JsonProperty("accountTypeUniqueNo")
         private String accountTypeUniqueNo;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AccountListRequest extends ShinhanApiDTO.RequestHeader {
+        @JsonProperty("loginId")
+        private String loginId;
     }
 
     @Data
@@ -57,14 +68,6 @@ public class DemandDepositAccountDTO {
         @JsonProperty("accountBalance")
         private String accountBalance;
 
-        public AccountListData toAccountListData() {
-            return AccountListData.builder()
-                    .bankCode(bankCode)
-                    .accountNo(accountNo)
-                    .accountName(accountName)
-                    .accountBalance(accountBalance)
-                    .build();
-        }
     }
     @Data
     @Builder
@@ -111,10 +114,17 @@ public class DemandDepositAccountDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProductData {
+        private String loginId;
         private String accountTypeUniqueNo;
         public CreateAccountRequest toCreateAccountRequest(String accountTypeUniqueNo) {
             return CreateAccountRequest.builder()
+                    .loginId(loginId)
                     .accountTypeUniqueNo(accountTypeUniqueNo)
+                    .build();
+        }
+        public AccountListRequest toAccountListRequest() {
+            return AccountListRequest.builder()
+                    .loginId(loginId)
                     .build();
         }
     }

@@ -56,13 +56,13 @@ public class DemandDepositService {
         }
     }
 
-    public List<DemandDepositAccountDTO.AccountListData> getDemandDepositAccounts(HttpSession session) {
+    public List<DemandDepositAccountDTO.AccountListData> getDemandDepositAccounts(DemandDepositAccountDTO.ProductData productData) {
         List<DemandDepositAccountDTO.AccountListData> response = new ArrayList<>();
         Mono<DemandDepositAccountDTO.ShinhanApiGetDepositAccountsResponse> shinhanApiResponseMono = apiService.PostRequestUserKey(
                 "/edu/demandDeposit/inquireDemandDepositAccountList",
-                new ShinhanApiDTO.RequestHeader(),
-                DemandDepositAccountDTO.ShinhanApiGetDepositAccountsResponse.class,
-                session
+                productData.toAccountListRequest(),
+                DemandDepositAccountDTO.ShinhanApiGetDepositAccountsResponse.class
+                , productData.getLoginId()
         );
         try{
             DemandDepositAccountDTO.ShinhanApiGetDepositAccountsResponse shinhanApiGetDepositAccountsResponse = shinhanApiResponseMono.block();
@@ -83,17 +83,14 @@ public class DemandDepositService {
     }
 
     @Transactional
-    public void createDemandDepositAccount(DemandDepositAccountDTO.ProductData productData, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            throw new RuntimeException("User not found in session");
-        }
+    public void createDemandDepositAccount(DemandDepositAccountDTO.ProductData productData) {
+
 
         Mono<DemandDepositAccountDTO.CreateAccountResponse> responseMono = apiService.PostRequestUserKey(
                 "/edu/demandDeposit/createDemandDepositAccount",
                 productData.toCreateAccountRequest(accountTypeUniqueNo),
-                DemandDepositAccountDTO.CreateAccountResponse.class,
-                session
+                DemandDepositAccountDTO.CreateAccountResponse.class
+                , productData.getLoginId()
         );
 
         try {
@@ -102,7 +99,7 @@ public class DemandDepositService {
                     .orElseThrow(() -> new RuntimeException("Deposit product not found"));
 
             DemandDepositAccount demandDepositAccount = DemandDepositAccount.builder()
-                    .user(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")))
+                    .user(userRepository.findByLoginId(productData.getLoginId()).get())
                     .depositProduct(depositProduct)
                     .account_no(response.getRec().getAccountNo())
                     .build();

@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -41,18 +43,16 @@ public class UserService {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
     }
-    public ResponseEntity<String> loginUser(UserDTO.UserLoginRequest loginRequest, HttpSession session) {
-        User user = userRepository.findByLoginId(loginRequest.getLogin_id());
-        if (user == null || !user.getPassword().equals(loginRequest.getPassword())) {
+    public ResponseEntity<String> loginUser(UserDTO.UserLoginRequest loginRequest) {
+        Optional<User> user = userRepository.findByLoginId(loginRequest.getLogin_id());
+        if (user.isEmpty() || !user.get().getPassword().equals(loginRequest.getPassword())) {
             return ResponseEntity.badRequest().body("Invalid login credentials");
         }
-        session.setAttribute("userId", user.getId());
-        session.setAttribute("userKey", user.getUser_key());
         return ResponseEntity.ok("Login successful");
     }
 
-    public ResponseEntity<String> logoutUser(HttpSession session) {
-        session.invalidate();
+    public ResponseEntity<String> logoutUser() {
+
         return ResponseEntity.ok("Logout successful");
     }
 }

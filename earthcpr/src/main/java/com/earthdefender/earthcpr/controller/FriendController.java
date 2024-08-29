@@ -1,6 +1,7 @@
 package com.earthdefender.earthcpr.controller;
 
 import com.earthdefender.earthcpr.DTO.FriendDTO;
+import com.earthdefender.earthcpr.response.ApiResponseEntity;
 import com.earthdefender.earthcpr.service.FriendService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -2,6 +2,7 @@ package com.earthdefender.earthcpr.service;
 
 import com.earthdefender.earthcpr.DTO.ShinhanApiDTO;
 import com.earthdefender.earthcpr.DTO.UserDTO;
+import com.earthdefender.earthcpr.repository.UserRepository;
 import com.earthdefender.earthcpr.response.CustomException;
 import com.earthdefender.earthcpr.response.ErrorCode;
 import com.mysql.cj.Session;
@@ -23,6 +24,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class ApiService {
     private final WebClient webClient;
+    private final UserRepository userRepository;
 
     @Value("${shinhan.api.transaction-unique-no-length}")
     private int transactionUniqueNoLength;
@@ -56,7 +58,7 @@ public class ApiService {
                 .retrieve()
                 .bodyToMono(responseType);
     }
-    public <T, R> Mono<R> PostRequestUserKey(String uri, T body, Class<R> responseType, HttpSession session) {
+    public <T, R> Mono<R> PostRequestUserKey(String uri, T body, Class<R> responseType,String loginId) {
         if (body instanceof ShinhanApiDTO.RequestHeader) {
             // uri 끝이 api 서비스명
             String[] uris = uri.split("/");
@@ -70,7 +72,7 @@ public class ApiService {
                     .apiServiceCode(serviceName)
                     .institutionTransactionUniqueNo(generateTransactionUniqueNo())
                     .apiKey(shinhanApiKey)
-                    .userKey(session.getAttribute("userKey").toString())
+                    .userKey(userRepository.findByLoginId(loginId).get().getUser_key())
                     .build());
             // 로깅하기
         }

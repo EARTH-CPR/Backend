@@ -29,12 +29,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@Valid @RequestBody UserDTO.UserLoginRequest loginRequest, HttpSession session) {
-        return userService.loginUser(loginRequest,session);
+    public ResponseEntity<String> loginUser(@Valid @RequestBody UserDTO.UserLoginRequest loginRequest) {
+        return userService.loginUser(loginRequest);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logoutUser(HttpSession session) {
-        return userService.logoutUser(session);
+    public ResponseEntity<String> logoutUser() {
+        return userService.logoutUser();
     }
 }

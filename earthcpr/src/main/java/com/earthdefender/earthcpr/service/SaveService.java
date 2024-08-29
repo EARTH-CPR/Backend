@@ -72,16 +72,12 @@ public class SaveService {
         }
     }
 
-    public void createSavingsAccount(SavingsAccountDTO.ProductData productData, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            throw new CustomException(ErrorCode.NOT_FOUND);
-        }
-
-        Optional<User> userOptional = userRepository.findById(userId);
+    public void createSavingsAccount(SavingsAccountDTO.ProductData productData) {
+        Optional<User> userOptional = userRepository.findByLoginId(productData.getLoginId());
         if (userOptional.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND);
         }
+
         System.out.println("productData: " + productData);
         Optional<SavingsProduct> productOptional = savingsProductRepository.findByAccountTypeUniqueNo(productData.getAccountTypeUniqueNo());
         if (productOptional.isEmpty()) {
@@ -91,8 +87,8 @@ public class SaveService {
         Mono<SavingsAccountDTO.CreateAccountResponse> responseMono = apiService.PostRequestUserKey(
                 "/edu/savings/createAccount",
                 productData.toCreateAccountRequest(),
-                SavingsAccountDTO.CreateAccountResponse.class,
-                session
+                SavingsAccountDTO.CreateAccountResponse.class
+                , productData.getLoginId()
         );
         try {
             SavingsAccountDTO.CreateAccountResponse response = responseMono.block();
@@ -147,9 +143,9 @@ public class SaveService {
         return response;
     }
     //적금 상세 정보 가져오기
-    public SavingsAccountDTO.ProductData getSavingProductDetail(SavingsAccountDTO.ProductData productData,HttpSession session) {
+    public SavingsAccountDTO.ProductData getSavingProductDetail(SavingsAccountDTO.ProductData productData) {
         Mono<SavingsAccountDTO.ShinhanApiInquireAccountResponse> shinhanApiResponseMono
-                = apiService.PostRequestUserKey("/edu/savings/inquireAccount", productData.toInquireAccountRequest(), SavingsAccountDTO.ShinhanApiInquireAccountResponse.class, session);
+                = apiService.PostRequestUserKey("/edu/savings/inquireAccount", productData.toInquireAccountRequest(), SavingsAccountDTO.ShinhanApiInquireAccountResponse.class, productData.getLoginId());
         try {
             SavingsAccountDTO.ShinhanApiInquireAccountResponse shinhanApiResponse = shinhanApiResponseMono.block();
             return shinhanApiResponse.getRec().toProductData();
@@ -157,5 +153,23 @@ public class SaveService {
             log.error(e.getMessage());
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
+    }
+
+    //적금 입금 내역 가져오기
+    public List<SavingsAccountDTO.PaymentInfo> getPaymentList(SavingsAccountDTO.ProductData productData) {
+        Mono<SavingsAccountDTO.ShinhanApiInquirePaymentResponse> shinhanApiResponseMono
+                = apiService.PostRequestUserKey("/edu/savings/inquirePayment", productData.toInquirePaymentRequest(), SavingsAccountDTO.ShinhanApiInquirePaymentResponse.class, productData.getLoginId());
+        try {
+            SavingsAccountDTO.ShinhanApiInquirePaymentResponse shinhanApiResponse = shinhanApiResponseMono.block();
+            List<SavingsAccountDTO.PaymentInfo> response = new ArrayList<>();
+            for (SavingsAccountDTO.PaymentInfo paymentInfo : shinhanApiResponse.getRec().get(0).getPaymentInfo()) {
+                response.add(paymentInfo);
+            }
+            return response;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
     }
 }

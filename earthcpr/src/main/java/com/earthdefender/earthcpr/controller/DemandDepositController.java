@@ -26,13 +26,13 @@ public class DemandDepositController {
         return ApiResponseEntity.toResponseEntity();
     }
     @PostMapping("/create/depositaccount")
-    public ResponseEntity<ApiResponseEntity> createDemandDepositAccount(@Valid @RequestBody DemandDepositAccountDTO.ProductData productData, HttpSession session) {
-        demandDepositService.createDemandDepositAccount(productData, session);
+    public ResponseEntity<ApiResponseEntity> createDemandDepositAccount(@Valid @RequestBody DemandDepositAccountDTO.ProductData productData) {
+        demandDepositService.createDemandDepositAccount(productData);
         return ApiResponseEntity.toResponseEntity();
     }
     @PostMapping("/get/depositaccounts")
-    public ResponseEntity<ApiResponseEntity> getDemandDepositAccountList(HttpSession session) {
-        return ApiResponseEntity.toResponseEntity(demandDepositService.getDemandDepositAccounts(session));
+    public ResponseEntity<ApiResponseEntity> getDemandDepositAccountList(@Valid @RequestBody DemandDepositAccountDTO.ProductData productData) {
+        return ApiResponseEntity.toResponseEntity(demandDepositService.getDemandDepositAccounts(productData));
     }
 
 }
