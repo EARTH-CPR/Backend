@@ -172,4 +172,21 @@ public class SaveService {
         }
 
     }
+
+    public SavingsAccountDTO.ProductData inquireExpiryInterest(SavingsAccountDTO.ProductData productData) {
+        Mono<SavingsAccountDTO.ShinhanApiInquireExpiryResponse> responseMono = apiService.PostRequestUserKey(
+                "https://finopenapi.ssafy.io/ssafy/api/v1/edu/savings/inquireExpiryInterest",
+                productData.toInquireExpiryRequest(),
+                SavingsAccountDTO.ShinhanApiInquireExpiryResponse.class,
+                productData.getLoginId()
+        );
+
+        try {
+            SavingsAccountDTO.ShinhanApiInquireExpiryResponse response = responseMono.block();
+            return response.getRec().toProductData();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+    }
 }

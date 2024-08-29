@@ -102,6 +102,8 @@ public class SavingsAccountDTO {
         private String bankName;
         private String accountName;
         private List<PaymentInfo> paymentInfo;
+        private String expiryBalance;
+        private String expiryInterest;
 
         public CreateAccountRequest toCreateAccountRequest() {
             return CreateAccountRequest.builder()
@@ -119,6 +121,13 @@ public class SavingsAccountDTO {
         }
         public InquirePaymentRequest toInquirePaymentRequest() {
             return InquirePaymentRequest.builder()
+                    .loginId(loginId)
+                    .accountNo(accountNo)
+                    .build();
+        }
+
+        public InquireExpiryRequest toInquireExpiryRequest() {
+            return InquireExpiryRequest.builder()
                     .loginId(loginId)
                     .accountNo(accountNo)
                     .build();
@@ -270,5 +279,77 @@ public class SavingsAccountDTO {
         private String status;
         @JsonProperty("failureReason")
         private String failureReason;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquireExpiryRequest extends ShinhanApiDTO.RequestHeader {
+        @JsonProperty("loginId")
+        private String loginId;
+
+        @JsonProperty("accountNo")
+        private String accountNo;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShinhanApiInquireExpiryResponse {
+        @JsonProperty("Header")
+        private ShinhanApiDTO.ResponseHeader header;
+
+        @JsonProperty("REC")
+        private InquireExpiryResponse rec;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquireExpiryResponse {
+        @JsonProperty("bankCode")
+        private String bankCode;
+
+        @JsonProperty("bankName")
+        private String bankName;
+
+        @JsonProperty("accountNo")
+        private String accountNo;
+
+        @JsonProperty("accountName")
+        private String accountName;
+
+        @JsonProperty("interestRate")
+        private String interestRate;
+
+        @JsonProperty("accountCreateDate")
+        private String accountCreateDate;
+
+        @JsonProperty("accountExpiryDate")
+        private String accountExpiryDate;
+
+        @JsonProperty("expiryBalance")
+        private String expiryBalance;
+
+        @JsonProperty("expiryInterest")
+        private String expiryInterest;
+
+        @JsonProperty("expiryTotalBalance")
+        private String expiryTotalBalance;
+
+        public ProductData toProductData() {
+            return ProductData.builder()
+                    .accountNo(this.accountNo)
+                    .interestRate(this.interestRate)
+                    .accountCreateDate(this.accountCreateDate)
+                    .accountExpiryDate(this.accountExpiryDate)
+                    .totalBalance(this.expiryTotalBalance)
+                    .expiryBalance(this.expiryBalance)
+                    .expiryInterest(this.expiryInterest)
+                    .build();
+        }
     }
 }

@@ -49,4 +49,11 @@ public class SaveController {
         List<SavingsAccountDTO.PaymentInfo> paymentList =  saveService.getPaymentList(productData);
         return ApiResponseEntity.toResponseEntity(paymentList);
     }
+    //만기이자 조회
+    @PostMapping("/inquire/expiryinterest")
+    public ResponseEntity<ApiResponseEntity> getExpiryInterest(@Valid @RequestBody SavingsAccountDTO.ProductData productData) {
+        SavingsAccountDTO.ProductData expiryInterestList =  saveService.inquireExpiryInterest(productData);
+        return ApiResponseEntity.toResponseEntity(expiryInterestList);
+    }
+    //
 }
