@@ -52,8 +52,13 @@ public class SaveController {
     //만기이자 조회
     @PostMapping("/inquire/expiryinterest")
     public ResponseEntity<ApiResponseEntity> getExpiryInterest(@Valid @RequestBody SavingsAccountDTO.ProductData productData) {
-        SavingsAccountDTO.ProductData expiryInterestList =  saveService.inquireExpiryInterest(productData);
-        return ApiResponseEntity.toResponseEntity(expiryInterestList);
+        SavingsAccountDTO.ProductData expiryInterest =  saveService.inquireExpiryInterest(productData);
+        return ApiResponseEntity.toResponseEntity(expiryInterest);
     }
-    //
+    //중도해지 이자 조회
+    @PostMapping("/inquire/earlyinterest")
+    public ResponseEntity<ApiResponseEntity> getEarlyInterest(@Valid @RequestBody SavingsAccountDTO.ProductData productData) {
+        SavingsAccountDTO.ProductData earlyInterest=  saveService.inquireEarlyInterest(productData);
+        return ApiResponseEntity.toResponseEntity(earlyInterest);
+    }
 }

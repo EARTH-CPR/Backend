@@ -104,6 +104,9 @@ public class SavingsAccountDTO {
         private List<PaymentInfo> paymentInfo;
         private String expiryBalance;
         private String expiryInterest;
+        private String earlyTerminationDate;
+        private String earlyTerminationInterest;
+        private String earlyTerminationBalance;
 
         public CreateAccountRequest toCreateAccountRequest() {
             return CreateAccountRequest.builder()
@@ -128,6 +131,12 @@ public class SavingsAccountDTO {
 
         public InquireExpiryRequest toInquireExpiryRequest() {
             return InquireExpiryRequest.builder()
+                    .loginId(loginId)
+                    .accountNo(accountNo)
+                    .build();
+        }
+        public InquireEarlyRequest toInquireEarlyRequest() {
+            return InquireEarlyRequest.builder()
                     .loginId(loginId)
                     .accountNo(accountNo)
                     .build();
@@ -195,6 +204,7 @@ public class SavingsAccountDTO {
         private String accountCreateDate;
         @JsonProperty("accountExpiryDate")
         private String accountExpiryDate;
+
         public ProductData toProductData() {
             return ProductData.builder()
                     .accountNo(this.accountNo)
@@ -349,6 +359,77 @@ public class SavingsAccountDTO {
                     .totalBalance(this.expiryTotalBalance)
                     .expiryBalance(this.expiryBalance)
                     .expiryInterest(this.expiryInterest)
+                    .build();
+        }
+    }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquireEarlyRequest extends ShinhanApiDTO.RequestHeader {
+        @JsonProperty("loginId")
+        private String loginId;
+
+        @JsonProperty("accountNo")
+        private String accountNo;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShinhanApiInquireEarlyResponse {
+        @JsonProperty("Header")
+        private ShinhanApiDTO.ResponseHeader header;
+
+        @JsonProperty("REC")
+        private InquireEarlyResponse rec;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquireEarlyResponse {
+        @JsonProperty("bankCode")
+        private String bankCode;
+
+        @JsonProperty("bankName")
+        private String bankName;
+
+        @JsonProperty("accountNo")
+        private String accountNo;
+
+        @JsonProperty("accountName")
+        private String accountName;
+
+        @JsonProperty("interestRate")
+        private String interestRate;
+
+        @JsonProperty("accountCreateDate")
+        private String accountCreateDate;
+
+        @JsonProperty("earlyTerminationDate")
+        private String earlyTerminationDate;
+
+        @JsonProperty("totalBalance")
+        private String totalBalance;
+
+        @JsonProperty("earlyTerminationInterest")
+        private String earlyTerminationInterest;
+
+        @JsonProperty("earlyTerminationBalance")
+        private String earlyTerminationBalance;
+
+        public ProductData toProductData() {
+            return ProductData.builder()
+                    .accountNo(this.accountNo)
+                    .interestRate(this.interestRate)
+                    .accountCreateDate(this.accountCreateDate)
+                    .earlyTerminationDate(this.earlyTerminationDate)
+                    .totalBalance(this.totalBalance)
+                    .earlyTerminationInterest(this.earlyTerminationInterest)
+                    .earlyTerminationBalance(this.earlyTerminationBalance)
                     .build();
         }
     }

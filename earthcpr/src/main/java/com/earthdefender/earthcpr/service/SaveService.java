@@ -189,4 +189,20 @@ public class SaveService {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
     }
+    public SavingsAccountDTO.ProductData inquireEarlyInterest(SavingsAccountDTO.ProductData productData) {
+        Mono<SavingsAccountDTO.ShinhanApiInquireEarlyResponse> responseMono = apiService.PostRequestUserKey(
+                "https://finopenapi.ssafy.io/ssafy/api/v1/edu/savings/inquireEarlyTerminationInterest",
+                productData.toInquireEarlyRequest(),
+                SavingsAccountDTO.ShinhanApiInquireEarlyResponse.class,
+                productData.getLoginId()
+        );
+
+        try {
+            SavingsAccountDTO.ShinhanApiInquireEarlyResponse response = responseMono.block();
+            return response.getRec().toProductData();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+    }
 }
