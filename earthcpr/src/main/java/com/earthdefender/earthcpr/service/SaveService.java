@@ -246,9 +246,9 @@ public class SaveService {
 
     }
     //적금 계좌 목록 가져오기
-    public List<SavingsAccountDTO.SavingAccountListResponse> getSavingAccountList(SavingsAccountDTO.ProductData productData) {
+    public List<SavingsAccountDTO.SavingAccountListResponse> getSavingAccountList(SavingsAccountDTO.LoginIdData loginIdData) {
         Mono<SavingsAccountDTO.ShinhanApiSavingAccountListResponse> shinhanApiResponseMono
-                = apiService.PostRequestUserKey("/edu/savings/inquireAccountList",new ShinhanApiDTO.RequestHeader(), SavingsAccountDTO.ShinhanApiSavingAccountListResponse.class, productData.getLoginId());
+                = apiService.PostRequestUserKey("/edu/savings/inquireAccountList",new ShinhanApiDTO.RequestHeader(), SavingsAccountDTO.ShinhanApiSavingAccountListResponse.class, loginIdData.getLoginId());
 
         try {
             SavingsAccountDTO.ShinhanApiSavingAccountListResponse shinhanApiResponse = shinhanApiResponseMono.block();

@@ -158,6 +158,14 @@ public class SavingsAccountDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class LoginIdData{
+        private String loginId;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ShinhanApiInquireAccountResponse {
         @JsonProperty("Header")
         private ShinhanApiDTO.ResponseHeader header;
@@ -537,6 +545,7 @@ public class SavingsAccountDTO {
         @JsonProperty("REC")
         private RecResponse rec;
     }
+
 
 
     @Data

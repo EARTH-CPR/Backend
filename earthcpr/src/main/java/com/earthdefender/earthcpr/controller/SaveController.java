@@ -35,8 +35,8 @@ public class SaveController {
     }
     //적금계좌목록조회
     @PostMapping("/get/savingaccount")
-    public ResponseEntity<ApiResponseEntity> getSavingAccount(@Valid @RequestBody SavingsAccountDTO.ProductData productData) {
-        List<SavingsAccountDTO.SavingAccountListResponse> savingAccount =  saveService.getSavingAccountList(productData);
+    public ResponseEntity<ApiResponseEntity> getSavingAccount(@Valid @RequestBody SavingsAccountDTO.LoginIdData loginIdData) {
+        List<SavingsAccountDTO.SavingAccountListResponse> savingAccount =  saveService.getSavingAccountList(loginIdData);
         return ApiResponseEntity.toResponseEntity(savingAccount);
     }
 

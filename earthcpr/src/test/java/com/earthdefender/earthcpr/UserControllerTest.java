@@ -46,4 +46,29 @@ public class UserControllerTest extends AbstractRestDocsTests {
                         )
                 );
     }
+    @Test
+    void LoginUserTest() throws Exception {
+        UserDTO.UserLoginRequest userLoginRequest = UserDTO.UserLoginRequest.builder()
+                .loginId("loginId")
+                .password("password")
+                .build();
+
+        mockMvc.perform(post("/api/v1/user/login")
+                        .content(objectMapper.writeValueAsString(userLoginRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("loginId").type(JsonFieldType.STRING).description("로그인 ID"),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부"),
+                                        fieldWithPath("data").type(JsonFieldType.NULL).description("반환되는 데이터 없음")
+                                )
+                        )
+                );
+    }
+
 }
