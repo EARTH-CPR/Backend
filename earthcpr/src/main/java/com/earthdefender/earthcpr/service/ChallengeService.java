@@ -111,7 +111,7 @@ public class ChallengeService {
             throw new CustomException(ErrorCode.NOT_FOUND);
         }
 
-        List<SavingsAccountDTO.SavingAccountListResponse> savingAccountListResponseList = saveService.getSavingAccountList(SavingsAccountDTO.ProductData.builder()
+        List<SavingsAccountDTO.SavingAccountListResponse> savingAccountListResponseList = saveService.getSavingAccountList(SavingsAccountDTO.LoginIdData.builder()
                 .loginId(challengeSuccessRequest.getLoginId())
                 .build());
 
