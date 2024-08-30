@@ -72,7 +72,7 @@ public class ApiService {
                     .apiServiceCode(serviceName)
                     .institutionTransactionUniqueNo(generateTransactionUniqueNo())
                     .apiKey(shinhanApiKey)
-                    .userKey(userRepository.findByLoginId(loginId).get().getUser_key())
+                    .userKey(userRepository.findByLoginId(loginId).get().getUserKey())
                     .build());
             // 로깅하기
         }

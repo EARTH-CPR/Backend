@@ -108,6 +108,10 @@ public class SavingsAccountDTO {
         private String earlyTerminationInterest;
         private String earlyTerminationBalance;
         private String status;
+        private String userName;
+        private String accountDescription;
+        private String withdrawalBankCode;
+        private String withdrawalBankName;
 
         public CreateAccountRequest toCreateAccountRequest() {
             return CreateAccountRequest.builder()
@@ -506,5 +510,87 @@ public class SavingsAccountDTO {
                     .earlyTerminationBalance(this.earlyTerminationBalance)
                     .build();
         }
+    }
+
+
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RecResponse {
+        @JsonProperty("totalCount")
+        private String totalCount;
+
+        @JsonProperty("list")
+        private List<SavingAccountListResponse> list;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShinhanApiSavingAccountListResponse {
+        @JsonProperty("Header")
+        private ShinhanApiDTO.ResponseHeader header;
+
+        @JsonProperty("REC")
+        private RecResponse rec;
+    }
+
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SavingAccountListResponse {
+        @JsonProperty("bankCode")
+        private String bankCode;
+
+        @JsonProperty("bankName")
+        private String bankName;
+
+        @JsonProperty("userName")
+        private String userName;
+
+        @JsonProperty("accountNo")
+        private String accountNo;
+
+        @JsonProperty("accountName")
+        private String accountName;
+
+        @JsonProperty("accountDescription")
+        private String accountDescription;
+
+        @JsonProperty("withdrawalBankCode")
+        private String withdrawalBankCode;
+
+        @JsonProperty("withdrawalBankName")
+        private String withdrawalBankName;
+
+        @JsonProperty("withdrawalAccountNo")
+        private String withdrawalAccountNo;
+
+        @JsonProperty("subscriptionPeriod")
+        private String subscriptionPeriod;
+
+        @JsonProperty("depositBalance")
+        private String depositBalance;
+
+        @JsonProperty("interestRate")
+        private String interestRate;
+
+        @JsonProperty("installmentNumber")
+        private String installmentNumber;
+
+        @JsonProperty("totalBalance")
+        private String totalBalance;
+
+        @JsonProperty("accountCreateDate")
+        private String accountCreateDate;
+
+        @JsonProperty("accountExpiryDate")
+        private String accountExpiryDate;
+
     }
 }
