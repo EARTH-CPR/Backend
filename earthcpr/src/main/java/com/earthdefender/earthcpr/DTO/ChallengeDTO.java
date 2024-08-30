@@ -20,4 +20,13 @@ public class ChallengeDTO {
         private Long type;
         private Long verification;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChallengeSuccessResponse {
+        private boolean success;
+        private String message;
+    }
 }

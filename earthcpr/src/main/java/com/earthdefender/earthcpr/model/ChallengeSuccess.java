@@ -10,14 +10,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @ToString
+@Builder
 public class ChallengeSuccess {
     @Id
     @GeneratedValue
     private long id;
 
     @ManyToOne
-    @JoinColumn(name="savings_product_id")
-    private SavingsProduct saving;
+    @JoinColumn(name="savings_account_id")
+    private SavingsAccount savingsAccount;
 
     @ManyToOne
     @JoinColumn(name = "challenge_id")
