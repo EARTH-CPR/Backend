@@ -16,7 +16,7 @@ java {
 
 configurations {
 	// For RestDocs
-	asciidoctorExt
+//	asciidoctorExt
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
