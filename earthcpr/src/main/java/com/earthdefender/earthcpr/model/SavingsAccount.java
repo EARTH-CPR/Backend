@@ -29,4 +29,5 @@ public class SavingsAccount {
 
     private double additional_interest_rate;
     private String withdrawalAccountNo;
+
 }
