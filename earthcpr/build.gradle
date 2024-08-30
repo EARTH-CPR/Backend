@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.8'
 	id 'io.spring.dependency-management' version '1.1.6'
-	id "org.asciidoctor.jvm.convert" version "3.3.2"
+//	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'com.earthdefender'
@@ -40,7 +40,7 @@ dependencies {
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 
 	// Rest-docs
-	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+//	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
 	// JUnit5
@@ -48,38 +48,38 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
 }
 
-tasks.named('test') {
-	// For Rest-docs
-	outputs.dir snippetsDir
-	useJUnitPlatform()
-}
+//tasks.named('test') {
+//	// For Rest-docs
+//	outputs.dir snippetsDir
+//	useJUnitPlatform()
+//}
 
 // For Rest-docs
-ext {
-	snippetsDir = file('build/generated-snippets')
-}
-
-asciidoctor {
-	configurations 'asciidoctorExt'
-	baseDirFollowsSourceFile()
-	inputs.dir(snippetsDir)
-	dependsOn test
-}
-
-asciidoctor.doFirst {
-	// asciidoctor가 실행될 때 기존 파일들을 삭제
-	delete file('src/main/resources/static')
-}
-
-task createDocument(type: Copy) {
-	dependsOn asciidoctor
-	from file("build/docs/asciidoc")
-	into file("src/main/resources/static")
-}
-
-bootJar {
-	dependsOn createDocument
-	from("${asciidoctor.outputDir}") {
-		into 'static/docs'
-	}
-}
+//ext {
+//	snippetsDir = file('build/generated-snippets')
+//}
+//
+//asciidoctor {
+//	configurations 'asciidoctorExt'
+//	baseDirFollowsSourceFile()
+//	inputs.dir(snippetsDir)
+//	dependsOn test
+//}
+//
+//asciidoctor.doFirst {
+//	// asciidoctor가 실행될 때 기존 파일들을 삭제
+//	delete file('src/main/resources/static')
+//}
+//
+//task createDocument(type: Copy) {
+//	dependsOn asciidoctor
+//	from file("build/docs/asciidoc")
+//	into file("src/main/resources/static")
+//}
+//
+//bootJar {
+//	dependsOn createDocument
+//	from("${asciidoctor.outputDir}") {
+//		into 'static/docs'
+//	}
+//}
