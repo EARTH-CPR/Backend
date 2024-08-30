@@ -16,7 +16,7 @@ public class UserDTO {
         @JsonProperty("password")
         private String password;
         @JsonProperty("userNickname")
-        private String user_nickname;
+        private String userNickname;
     }
 
     @Data
@@ -25,7 +25,7 @@ public class UserDTO {
     @AllArgsConstructor
     public static class UserShinhanRequest {
         @JsonProperty("userId")
-        private String login_id;
+        private String loginId;
         @JsonProperty("apiKey")
         private String apiKey;
     }
@@ -41,7 +41,7 @@ public class UserDTO {
 
         public UserShinhanRequest toShinhanRequest(String apiKey){
             return UserShinhanRequest.builder()
-                    .login_id(loginId)
+                    .loginId(loginId)
                     .apiKey(apiKey)
                     .build();
         }
@@ -53,19 +53,20 @@ public class UserDTO {
     @AllArgsConstructor
     public static class UserResponse {
         @JsonProperty("userId")
-        private String login_id;
+        private String loginId;
         @JsonProperty("userKey")
-        private String user_key;
+        private String userKey;
         @JsonIgnore
         private String password;
         @JsonIgnore
-        private String user_nickname;
+        private String userNickname;
     }
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class UserLoginRequest {
-        private String login_id;
+        private String loginId;
         private String password;
     }
 }

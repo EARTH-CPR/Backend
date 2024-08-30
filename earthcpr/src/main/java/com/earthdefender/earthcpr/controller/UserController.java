@@ -33,5 +33,4 @@ public class UserController {
         userService.loginUser(loginRequest);
         return ApiResponseEntity.toResponseEntity();
     }
-
 }
