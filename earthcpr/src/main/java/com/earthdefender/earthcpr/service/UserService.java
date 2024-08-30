@@ -43,16 +43,11 @@ public class UserService {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
     }
-    public ResponseEntity<String> loginUser(UserDTO.UserLoginRequest loginRequest) {
+    public void loginUser(UserDTO.UserLoginRequest loginRequest) {
         Optional<User> user = userRepository.findByLoginId(loginRequest.getLogin_id());
         if (user.isEmpty() || !user.get().getPassword().equals(loginRequest.getPassword())) {
-            return ResponseEntity.badRequest().body("Invalid login credentials");
+            throw new CustomException(ErrorCode.BAD_REQUEST);
         }
-        return ResponseEntity.ok("Login successful");
     }
 
-    public ResponseEntity<String> logoutUser() {
-
-        return ResponseEntity.ok("Logout successful");
-    }
 }

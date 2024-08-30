@@ -17,12 +17,14 @@ public class FriendController {
     private final FriendService friendService;
 
     @PostMapping("/add")
-    public ResponseEntity<String> addFriend(@Valid @RequestBody FriendDTO.FriendData friendData) {
-        return friendService.addFriend(friendData);
+    public ResponseEntity<ApiResponseEntity> addFriend(@Valid @RequestBody FriendDTO.FriendData friendData) {
+        friendService.addFriend(friendData);
+        return ApiResponseEntity.toResponseEntity();
     }
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteFriend(@Valid @RequestBody FriendDTO.FriendData friendData) {
-        return friendService.deleteFriend(friendData);
+    public ResponseEntity<ApiResponseEntity> deleteFriend(@Valid @RequestBody FriendDTO.FriendData friendData) {
+        friendService.deleteFriend(friendData);
+        return ApiResponseEntity.toResponseEntity();
     }
 
 }

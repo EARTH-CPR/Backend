@@ -29,12 +29,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@Valid @RequestBody UserDTO.UserLoginRequest loginRequest) {
-        return userService.loginUser(loginRequest);
+    public ResponseEntity<ApiResponseEntity> loginUser(@Valid @RequestBody UserDTO.UserLoginRequest loginRequest) {
+        userService.loginUser(loginRequest);
+        return ApiResponseEntity.toResponseEntity();
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<String> logoutUser() {
-        return userService.logoutUser();
-    }
 }
