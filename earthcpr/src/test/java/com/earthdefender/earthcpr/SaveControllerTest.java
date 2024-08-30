@@ -3,6 +3,7 @@ package com.earthdefender.earthcpr;
 
 import com.earthdefender.earthcpr.DTO.ChallengeDTO;
 import com.earthdefender.earthcpr.DTO.SavingProductDTO;
+import com.earthdefender.earthcpr.DTO.SavingsAccountDTO;
 import com.earthdefender.earthcpr.controller.SaveController;
 import com.earthdefender.earthcpr.restdocs.AbstractRestDocsTests;
 import com.earthdefender.earthcpr.service.SaveService;
@@ -143,4 +144,85 @@ public class SaveControllerTest extends AbstractRestDocsTests {
                         )
                 );
     }
+    @Test
+    void GetSavingAccountsTest() throws Exception {
+        SavingsAccountDTO.SavingAccountListResponse accountListResponse1 = SavingsAccountDTO.SavingAccountListResponse.builder()
+                .bankCode("002")
+                .bankName("산업은행")
+                .userName("aaa")
+                .accountNo("0023983668")
+                .accountName("7일적금")
+                .accountDescription("7일적금입니다")
+                .withdrawalBankCode("001")
+                .withdrawalBankName("한국은행")
+                .withdrawalAccountNo("0015256174546107")
+                .subscriptionPeriod("7")
+                .depositBalance("10000")
+                .interestRate("10")
+                .installmentNumber("1")
+                .totalBalance("10000")
+                .accountCreateDate("20240830")
+                .accountExpiryDate("20240906")
+                .build();
+
+        SavingsAccountDTO.SavingAccountListResponse accountListResponse2 = SavingsAccountDTO.SavingAccountListResponse.builder()
+                .bankCode("002")
+                .bankName("산업은행")
+                .userName("aaa")
+                .accountNo("0029582247")
+                .accountName("7일적금")
+                .accountDescription("7일적금입니다")
+                .withdrawalBankCode("001")
+                .withdrawalBankName("한국은행")
+                .withdrawalAccountNo("0015256174546107")
+                .subscriptionPeriod("7")
+                .depositBalance("10000")
+                .interestRate("10")
+                .installmentNumber("3")
+                .totalBalance("30000")
+                .accountCreateDate("20240828")
+                .accountExpiryDate("20240904")
+                .build();
+
+        SavingsAccountDTO.LoginIdData loginIdData = SavingsAccountDTO.LoginIdData.builder()
+                .loginId("testUser")
+                .build();
+
+        given(saveService.getSavingAccountList(any(SavingsAccountDTO.LoginIdData.class)))
+                .willReturn(Arrays.asList(accountListResponse1, accountListResponse2));
+
+
+        mockMvc.perform(post("/api/v1/save/get/savingaccount")
+                        .content(objectMapper.writeValueAsString(loginIdData))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("loginId").type(JsonFieldType.STRING).description("로그인 ID")
+                                ),
+                                responseFields(
+                                        fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부")
+                                ).andWithPrefix("data.[].",
+                                        fieldWithPath("bankCode").type(JsonFieldType.STRING).description("은행 코드"),
+                                        fieldWithPath("bankName").type(JsonFieldType.STRING).description("은행 이름"),
+                                        fieldWithPath("userName").type(JsonFieldType.STRING).description("사용자 이름"),
+                                        fieldWithPath("accountNo").type(JsonFieldType.STRING).description("계좌 번호"),
+                                        fieldWithPath("accountName").type(JsonFieldType.STRING).description("계좌 이름"),
+                                        fieldWithPath("accountDescription").type(JsonFieldType.STRING).description("계좌 설명"),
+                                        fieldWithPath("withdrawalBankCode").type(JsonFieldType.STRING).description("출금 은행 코드"),
+                                        fieldWithPath("withdrawalBankName").type(JsonFieldType.STRING).description("출금 은행 이름"),
+                                        fieldWithPath("withdrawalAccountNo").type(JsonFieldType.STRING).description("출금 계좌 번호"),
+                                        fieldWithPath("subscriptionPeriod").type(JsonFieldType.STRING).description("가입 기간"),
+                                        fieldWithPath("depositBalance").type(JsonFieldType.STRING).description("예치 금액"),
+                                        fieldWithPath("interestRate").type(JsonFieldType.STRING).description("이자율"),
+                                        fieldWithPath("installmentNumber").type(JsonFieldType.STRING).description("납입 횟수"),
+                                        fieldWithPath("totalBalance").type(JsonFieldType.STRING).description("총 잔액"),
+                                        fieldWithPath("accountCreateDate").type(JsonFieldType.STRING).description("계좌 생성일"),
+                                        fieldWithPath("accountExpiryDate").type(JsonFieldType.STRING).description("계좌 만기일")
+                                )
+                        )
+                );
+    }
+
 }
