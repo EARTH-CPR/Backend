@@ -79,40 +79,15 @@ public class SavingsAccountDTO {
 
     }
 
-
-
-
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProductData {
+    public static class CreateAccountData{
         private String loginId;
-        private String accountNo;
         private String accountTypeUniqueNo;
-        private String withdrawalAccountNo;
-        private String interestRate;
-        private String subscriptionPeriod;
-        private String installmentNumber;
-        private String totalBalance;
-        private String accountCreateDate;
-        private String accountExpiryDate;
         private String depositBalance;
-        private String bankCode;
-        private String bankName;
-        private String accountName;
-        private List<PaymentInfo> paymentInfo;
-        private String expiryBalance;
-        private String expiryInterest;
-        private String earlyTerminationDate;
-        private String earlyTerminationInterest;
-        private String earlyTerminationBalance;
-        private String status;
-        private String userName;
-        private String accountDescription;
-        private String withdrawalBankCode;
-        private String withdrawalBankName;
-
+        private String withdrawalAccountNo;
         public CreateAccountRequest toCreateAccountRequest() {
             return CreateAccountRequest.builder()
                     .loginId(loginId)
@@ -121,38 +96,88 @@ public class SavingsAccountDTO {
                     .depositBalance(depositBalance)
                     .build();
         }
+    }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquireAccountData {
+        private String loginId;
+        private String accountNo;
+
         public InquireAccountRequest toInquireAccountRequest() {
             return InquireAccountRequest.builder()
                     .loginId(loginId)
                     .accountNo(accountNo)
                     .build();
         }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquireAccountResponseData {
+        private String bankCode;
+        private String bankName;
+        private String userName;
+        private String accountNo;
+        private String accountName;
+        private String accountDescription;
+        private String withdrawalBankCode;
+        private String withdrawalBankName;
+        private String withdrawalAccountNo;
+        private String subscriptionPeriod;
+        private String depositBalance;
+        private String interestRate;
+        private String installmentNumber;
+        private String totalBalance;
+        private String accountCreateDate;
+        private String accountExpiryDate;
+    }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquirePaymentData {
+        private String loginId;
+        private String accountNo;
         public InquirePaymentRequest toInquirePaymentRequest() {
             return InquirePaymentRequest.builder()
                     .loginId(loginId)
                     .accountNo(accountNo)
                     .build();
         }
-
+    }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquireExpiryData {
+        private String loginId;
+        private String accountNo;
         public InquireExpiryRequest toInquireExpiryRequest() {
             return InquireExpiryRequest.builder()
                     .loginId(loginId)
                     .accountNo(accountNo)
                     .build();
         }
+    }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquireEarlyData {
+        private String loginId;
+        private String accountNo;
         public InquireEarlyRequest toInquireEarlyRequest() {
             return InquireEarlyRequest.builder()
                     .loginId(loginId)
                     .accountNo(accountNo)
                     .build();
         }
-        public deleteAccountRequest toDeleteAccountRequest() {
-            return deleteAccountRequest.builder()
-                    .loginId(loginId)
-                    .accountNo(accountNo)
-                    .build();
-        }
     }
+
 
     @Data
     @Builder
@@ -224,19 +249,24 @@ public class SavingsAccountDTO {
         @JsonProperty("accountExpiryDate")
         private String accountExpiryDate;
 
-        public ProductData toProductData() {
-            return ProductData.builder()
+        public InquireAccountResponseData toInquireAccountResponseData() {
+            return InquireAccountResponseData.builder()
+                    .bankCode(this.bankCode)
+                    .bankName(this.bankName)
+                    .userName(this.userName)
                     .accountNo(this.accountNo)
+                    .accountName(this.accountName)
+                    .accountDescription(this.accountDescription)
+                    .withdrawalBankCode(this.withdrawalBankCode)
+                    .withdrawalBankName(this.withdrawalBankName)
                     .withdrawalAccountNo(this.withdrawalAccountNo)
-                    .accountTypeUniqueNo(this.accountDescription)
+                    .subscriptionPeriod(this.subscriptionPeriod)
                     .depositBalance(this.depositBalance)
                     .interestRate(this.interestRate)
-                    .subscriptionPeriod(this.subscriptionPeriod)
                     .installmentNumber(this.installmentNumber)
                     .totalBalance(this.totalBalance)
                     .accountCreateDate(this.accountCreateDate)
                     .accountExpiryDate(this.accountExpiryDate)
-                    .accountName(this.accountName)
                     .build();
         }
     }
@@ -369,8 +399,8 @@ public class SavingsAccountDTO {
         @JsonProperty("expiryTotalBalance")
         private String expiryTotalBalance;
 
-        public ProductData toProductData() {
-            return ProductData.builder()
+        public InquireExpiryResponseData toInquireExpiryResponseData() {
+            return InquireExpiryResponseData.builder()
                     .accountNo(this.accountNo)
                     .interestRate(this.interestRate)
                     .accountCreateDate(this.accountCreateDate)
@@ -381,6 +411,22 @@ public class SavingsAccountDTO {
                     .build();
         }
     }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquireExpiryResponseData{
+        private String accountNo;
+        private String interestRate;
+        private String accountCreateDate;
+        private String accountExpiryDate;
+        private String expiryBalance;
+        private String expiryInterest;
+        private String expiryTotalBalance;
+        private String totalBalance;
+
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -440,8 +486,8 @@ public class SavingsAccountDTO {
         @JsonProperty("earlyTerminationBalance")
         private String earlyTerminationBalance;
 
-        public ProductData toProductData() {
-            return ProductData.builder()
+        public InquireEarlyResponseData toInquireEarlyResponseData() {
+            return InquireEarlyResponseData.builder()
                     .accountNo(this.accountNo)
                     .interestRate(this.interestRate)
                     .accountCreateDate(this.accountCreateDate)
@@ -452,6 +498,21 @@ public class SavingsAccountDTO {
                     .build();
         }
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InquireEarlyResponseData {
+        private String accountNo;
+        private String interestRate;
+        private String accountCreateDate;
+        private String earlyTerminationDate;
+        private String totalBalance;
+        private String earlyTerminationInterest;
+        private String earlyTerminationBalance;
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -508,8 +569,8 @@ public class SavingsAccountDTO {
         @JsonProperty("earlyTerminationBalance")
         private String earlyTerminationBalance;
 
-        public ProductData toProductData() {
-            return ProductData.builder()
+        public DeleteAccountResponseData toDeleteAccountResponseData() {
+            return DeleteAccountResponseData.builder()
                     .status(this.status)
                     .accountNo(this.accountNo)
                     .earlyTerminationDate(this.earlyTerminationDate)
@@ -519,7 +580,18 @@ public class SavingsAccountDTO {
                     .build();
         }
     }
-
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteAccountResponseData {
+        private String status;
+        private String accountNo;
+        private String earlyTerminationDate;
+        private String totalBalance;
+        private String earlyTerminationInterest;
+        private String earlyTerminationBalance;
+    }
 
 
     @Data

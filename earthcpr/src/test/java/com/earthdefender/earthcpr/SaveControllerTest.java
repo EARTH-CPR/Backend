@@ -21,6 +21,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -144,6 +145,37 @@ public class SaveControllerTest extends AbstractRestDocsTests {
                         )
                 );
     }
+
+    @Test
+    void CreateSavingsAccountTest() throws Exception {
+        SavingsAccountDTO.CreateAccountData createAccountData = SavingsAccountDTO.CreateAccountData.builder()
+                .loginId("testUser")
+                .accountTypeUniqueNo("123456")
+                .depositBalance("10000")
+                .withdrawalAccountNo("0015256174546107")
+                .build();
+
+
+        mockMvc.perform(post("/api/v1/save/create/savingaccount")
+                        .content(objectMapper.writeValueAsString(createAccountData))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("loginId").type(JsonFieldType.STRING).description("로그인 ID"),
+                                        fieldWithPath("accountTypeUniqueNo").type(JsonFieldType.STRING).description("계좌 유형 고유 번호"),
+                                        fieldWithPath("depositBalance").type(JsonFieldType.STRING).description("예치 금액"),
+                                        fieldWithPath("withdrawalAccountNo").type(JsonFieldType.STRING).description("출금 계좌 번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부"),
+                                        fieldWithPath("data").type(JsonFieldType.NULL).description("반환되는 데이터 없음")
+                                )
+                        )
+                );
+    }
+
     @Test
     void GetSavingAccountsTest() throws Exception {
         SavingsAccountDTO.SavingAccountListResponse accountListResponse1 = SavingsAccountDTO.SavingAccountListResponse.builder()
@@ -224,5 +256,249 @@ public class SaveControllerTest extends AbstractRestDocsTests {
                         )
                 );
     }
+    @Test
+    void GetSavingProductDetailTest() throws Exception {
+        SavingsAccountDTO.InquireAccountData inquireAccountData = SavingsAccountDTO.InquireAccountData.builder()
+                .loginId("testUser")
+                .accountNo("1234567890")
+                .build();
 
+        SavingsAccountDTO.InquireAccountResponseData productDetail = SavingsAccountDTO.InquireAccountResponseData.builder()
+                .bankCode("001")
+                .bankName("Shinhan Bank")
+                .userName("testUser")
+                .accountNo("1234567890")
+                .accountName("7일적금")
+                .accountDescription("7일적금입니다")
+                .withdrawalBankCode("002")
+                .withdrawalBankName("한국은행")
+                .withdrawalAccountNo("0015256174546107")
+                .subscriptionPeriod("7")
+                .depositBalance("10000")
+                .interestRate("10")
+                .installmentNumber("1")
+                .totalBalance("10000")
+                .accountCreateDate("20240830")
+                .accountExpiryDate("20240906")
+                .build();
+
+        given(saveService.getSavingProductDetail(any(SavingsAccountDTO.InquireAccountData.class)))
+                .willReturn(productDetail);
+
+        mockMvc.perform(post("/api/v1/save/inquire/savingaccount")
+                        .content(objectMapper.writeValueAsString(inquireAccountData))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("loginId").type(JsonFieldType.STRING).description("로그인 ID"),
+                                        fieldWithPath("accountNo").type(JsonFieldType.STRING).description("계좌 번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부")
+                                ).andWithPrefix("data.",
+                                        fieldWithPath("bankCode").type(JsonFieldType.STRING).description("은행 코드"),
+                                        fieldWithPath("bankName").type(JsonFieldType.STRING).description("은행 이름"),
+                                        fieldWithPath("userName").type(JsonFieldType.STRING).description("사용자 이름"),
+                                        fieldWithPath("accountNo").type(JsonFieldType.STRING).description("계좌 번호"),
+                                        fieldWithPath("accountName").type(JsonFieldType.STRING).description("계좌 이름"),
+                                        fieldWithPath("accountDescription").type(JsonFieldType.STRING).description("계좌 설명"),
+                                        fieldWithPath("withdrawalBankCode").type(JsonFieldType.STRING).description("출금 은행 코드"),
+                                        fieldWithPath("withdrawalBankName").type(JsonFieldType.STRING).description("출금 은행 이름"),
+                                        fieldWithPath("withdrawalAccountNo").type(JsonFieldType.STRING).description("출금 계좌 번호"),
+                                        fieldWithPath("subscriptionPeriod").type(JsonFieldType.STRING).description("가입 기간"),
+                                        fieldWithPath("depositBalance").type(JsonFieldType.STRING).description("예치 금액"),
+                                        fieldWithPath("interestRate").type(JsonFieldType.STRING).description("이자율"),
+                                        fieldWithPath("installmentNumber").type(JsonFieldType.STRING).description("납입 횟수"),
+                                        fieldWithPath("totalBalance").type(JsonFieldType.STRING).description("총 잔액"),
+                                        fieldWithPath("accountCreateDate").type(JsonFieldType.STRING).description("계좌 생성일"),
+                                        fieldWithPath("accountExpiryDate").type(JsonFieldType.STRING).description("계좌 만기일")
+                                )
+                        )
+                );
+    }
+    @Test
+    void GetPaymentListTest() throws Exception {
+        SavingsAccountDTO.InquirePaymentData inquirePaymentData = SavingsAccountDTO.InquirePaymentData.builder()
+                .loginId("testUser")
+                .accountNo("1234567890")
+                .build();
+
+        SavingsAccountDTO.PaymentInfo paymentInfo1 = SavingsAccountDTO.PaymentInfo.builder()
+                .depositInstallment("1")
+                .paymentBalance("10000")
+                .paymentDate("20240830")
+                .paymentTime("120000")
+                .status("SUCCESS")
+                .failureReason(null)
+                .build();
+
+        SavingsAccountDTO.PaymentInfo paymentInfo2 = SavingsAccountDTO.PaymentInfo.builder()
+                .depositInstallment("2")
+                .paymentBalance("10000")
+                .paymentDate("20240906")
+                .paymentTime("120000")
+                .status("SUCCESS")
+                .failureReason(null)
+                .build();
+
+        given(saveService.getPaymentList(any(SavingsAccountDTO.InquirePaymentData.class)))
+                .willReturn(Arrays.asList(paymentInfo1, paymentInfo2));
+
+        mockMvc.perform(post("/api/v1/save/inquire/payment")
+                        .content(objectMapper.writeValueAsString(inquirePaymentData))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("loginId").type(JsonFieldType.STRING).description("로그인 ID"),
+                                        fieldWithPath("accountNo").type(JsonFieldType.STRING).description("계좌 번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부")
+                                ).andWithPrefix("data.[].",
+                                        fieldWithPath("depositInstallment").type(JsonFieldType.STRING).description("납입 회차"),
+                                        fieldWithPath("paymentBalance").type(JsonFieldType.STRING).description("납입 금액"),
+                                        fieldWithPath("paymentDate").type(JsonFieldType.STRING).description("납입 날짜"),
+                                        fieldWithPath("paymentTime").type(JsonFieldType.STRING).description("납입 시간"),
+                                        fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                                        fieldWithPath("failureReason").type(JsonFieldType.STRING).description("실패 이유").optional()
+                                )
+                        )
+                );
+    }
+    @Test
+    void InquireExpiryInterestTest() throws Exception {
+        SavingsAccountDTO.InquireExpiryData inquireExpiryData = SavingsAccountDTO.InquireExpiryData.builder()
+                .loginId("testUser")
+                .accountNo("1234567890")
+                .build();
+
+        SavingsAccountDTO.InquireExpiryResponseData expiryResponseData = SavingsAccountDTO.InquireExpiryResponseData.builder()
+                .accountNo("1234567890")
+                .interestRate("10")
+                .accountCreateDate("20240830")
+                .accountExpiryDate("20240906")
+                .expiryBalance("10000")
+                .expiryInterest("100")
+                .expiryTotalBalance("10100")
+                .totalBalance("10100")
+                .build();
+
+        given(saveService.inquireExpiryInterest(any(SavingsAccountDTO.InquireExpiryData.class)))
+                .willReturn(expiryResponseData);
+
+        mockMvc.perform(post("/api/v1/save/inquire/expiryinterest")
+                        .content(objectMapper.writeValueAsString(inquireExpiryData))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("loginId").type(JsonFieldType.STRING).description("로그인 ID"),
+                                        fieldWithPath("accountNo").type(JsonFieldType.STRING).description("계좌 번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부")
+                                ).andWithPrefix("data.",
+                                        fieldWithPath("accountNo").type(JsonFieldType.STRING).description("계좌 번호"),
+                                        fieldWithPath("interestRate").type(JsonFieldType.STRING).description("이자율"),
+                                        fieldWithPath("accountCreateDate").type(JsonFieldType.STRING).description("계좌 생성일"),
+                                        fieldWithPath("accountExpiryDate").type(JsonFieldType.STRING).description("계좌 만기일"),
+                                        fieldWithPath("expiryBalance").type(JsonFieldType.STRING).description("만기 잔액"),
+                                        fieldWithPath("expiryInterest").type(JsonFieldType.STRING).description("만기 이자"),
+                                        fieldWithPath("expiryTotalBalance").type(JsonFieldType.STRING).description("만기 총 잔액"),
+                                        fieldWithPath("totalBalance").type(JsonFieldType.STRING).description("총 잔액")
+                                )
+                        )
+                );
+    }
+    @Test
+    void InquireEarlyInterestTest() throws Exception {
+        SavingsAccountDTO.InquireEarlyData inquireEarlyData = SavingsAccountDTO.InquireEarlyData.builder()
+                .loginId("testUser")
+                .accountNo("1234567890")
+                .build();
+
+        SavingsAccountDTO.InquireEarlyResponseData earlyResponseData = SavingsAccountDTO.InquireEarlyResponseData.builder()
+                .accountNo("1234567890")
+                .interestRate("10")
+                .accountCreateDate("20240830")
+                .earlyTerminationDate("20240906")
+                .totalBalance("10000")
+                .earlyTerminationInterest("50")
+                .earlyTerminationBalance("10050")
+                .build();
+
+        given(saveService.inquireEarlyInterest(any(SavingsAccountDTO.InquireEarlyData.class)))
+                .willReturn(earlyResponseData);
+
+        mockMvc.perform(post("/api/v1/save/inquire/earlyinterest")
+                        .content(objectMapper.writeValueAsString(inquireEarlyData))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("loginId").type(JsonFieldType.STRING).description("로그인 ID"),
+                                        fieldWithPath("accountNo").type(JsonFieldType.STRING).description("계좌 번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부")
+                                ).andWithPrefix("data.",
+                                        fieldWithPath("accountNo").type(JsonFieldType.STRING).description("계좌 번호"),
+                                        fieldWithPath("interestRate").type(JsonFieldType.STRING).description("이자율"),
+                                        fieldWithPath("accountCreateDate").type(JsonFieldType.STRING).description("계좌 생성일"),
+                                        fieldWithPath("earlyTerminationDate").type(JsonFieldType.STRING).description("중도 해지일"),
+                                        fieldWithPath("totalBalance").type(JsonFieldType.STRING).description("총 잔액"),
+                                        fieldWithPath("earlyTerminationInterest").type(JsonFieldType.STRING).description("중도 해지 이자"),
+                                        fieldWithPath("earlyTerminationBalance").type(JsonFieldType.STRING).description("중도 해지 잔액")
+                                )
+                        )
+                );
+    }
+    @Test
+    void DeleteAccountTest() throws Exception {
+        SavingsAccountDTO.InquireEarlyData inquireEarlyData = SavingsAccountDTO.InquireEarlyData.builder()
+                .loginId("testUser")
+                .accountNo("1234567890")
+                .build();
+
+        SavingsAccountDTO.DeleteAccountResponseData deleteAccountResponseData = SavingsAccountDTO.DeleteAccountResponseData.builder()
+                .status("SUCCESS")
+                .accountNo("1234567890")
+                .earlyTerminationDate("20240906")
+                .totalBalance("10000")
+                .earlyTerminationInterest("50")
+                .earlyTerminationBalance("10050")
+                .build();
+
+        given(saveService.deleteAccount(any(SavingsAccountDTO.InquireEarlyData.class)))
+                .willReturn(deleteAccountResponseData);
+
+        mockMvc.perform(post("/api/v1/save/delete/account")
+                        .content(objectMapper.writeValueAsString(inquireEarlyData))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("loginId").type(JsonFieldType.STRING).description("로그인 ID"),
+                                        fieldWithPath("accountNo").type(JsonFieldType.STRING).description("계좌 번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부")
+                                ).andWithPrefix("data.",
+                                        fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                                        fieldWithPath("accountNo").type(JsonFieldType.STRING).description("계좌 번호"),
+                                        fieldWithPath("earlyTerminationDate").type(JsonFieldType.STRING).description("중도 해지일"),
+                                        fieldWithPath("totalBalance").type(JsonFieldType.STRING).description("총 잔액"),
+                                        fieldWithPath("earlyTerminationInterest").type(JsonFieldType.STRING).description("중도 해지 이자"),
+                                        fieldWithPath("earlyTerminationBalance").type(JsonFieldType.STRING).description("중도 해지 잔액")
+                                )
+                        )
+                );
+    }
 }

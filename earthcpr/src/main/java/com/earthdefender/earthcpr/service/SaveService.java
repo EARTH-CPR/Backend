@@ -39,7 +39,7 @@ public class SaveService {
     private final ApiService apiService;
     private final DemandDepositService demandDepositService;
 
-
+    //적금 상품 생성
     @Transactional
     public void createSavingsProduct(SavingProductDTO.ProductData productData) {
 
@@ -70,23 +70,24 @@ public class SaveService {
         }
     }
 
-    public void createSavingsAccount(SavingsAccountDTO.ProductData productData) {
-        Optional<User> userOptional = userRepository.findByLoginId(productData.getLoginId());
+    //적금 계좌 생성
+    public void createSavingsAccount(SavingsAccountDTO.CreateAccountData createAccountData) {
+        Optional<User> userOptional = userRepository.findByLoginId(createAccountData.getLoginId());
         if (userOptional.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND);
         }
 
-        System.out.println("productData: " + productData);
-        Optional<SavingsProduct> productOptional = savingsProductRepository.findByAccountTypeUniqueNo(productData.getAccountTypeUniqueNo());
+        System.out.println("productData: " + createAccountData);
+        Optional<SavingsProduct> productOptional = savingsProductRepository.findByAccountTypeUniqueNo(createAccountData.getAccountTypeUniqueNo());
         if (productOptional.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND);
         }
 
         Mono<SavingsAccountDTO.CreateAccountResponse> responseMono = apiService.PostRequestUserKey(
                 "/edu/savings/createAccount",
-                productData.toCreateAccountRequest(),
+                createAccountData.toCreateAccountRequest(),
                 SavingsAccountDTO.CreateAccountResponse.class
-                , productData.getLoginId()
+                , createAccountData.getLoginId()
         );
         try {
             SavingsAccountDTO.CreateAccountResponse response = responseMono.block();
@@ -95,7 +96,7 @@ public class SaveService {
                     .savingProduct(productOptional.get())
                     .accountNo(response.getRec().getAccountNo())
                     .additional_interest_rate(Double.parseDouble(response.getRec().getInterestRate()))
-                    .withdrawalAccountNo(productData.getWithdrawalAccountNo())
+                    .withdrawalAccountNo(createAccountData.getWithdrawalAccountNo())
                     .build();
             System.out.println("savingsAccount: " + savingsAccount);
             savingsAccountRepository.save(savingsAccount);
@@ -141,110 +142,7 @@ public class SaveService {
         }
         return response;
     }
-    //적금 상세 정보 가져오기
-    public SavingsAccountDTO.ProductData getSavingProductDetail(SavingsAccountDTO.ProductData productData) {
-        Mono<SavingsAccountDTO.ShinhanApiInquireAccountResponse> shinhanApiResponseMono
-                = apiService.PostRequestUserKey("/edu/savings/inquireAccount", productData.toInquireAccountRequest(), SavingsAccountDTO.ShinhanApiInquireAccountResponse.class, productData.getLoginId());
-        try {
-            SavingsAccountDTO.ShinhanApiInquireAccountResponse shinhanApiResponse = shinhanApiResponseMono.block();
-            return shinhanApiResponse.getRec().toProductData();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new CustomException(ErrorCode.BAD_REQUEST);
-        }
-    }
 
-    //적금 입금 내역 가져오기
-    public List<SavingsAccountDTO.PaymentInfo> getPaymentList(SavingsAccountDTO.ProductData productData) {
-        Mono<SavingsAccountDTO.ShinhanApiInquirePaymentResponse> shinhanApiResponseMono
-                = apiService.PostRequestUserKey("/edu/savings/inquirePayment", productData.toInquirePaymentRequest(), SavingsAccountDTO.ShinhanApiInquirePaymentResponse.class, productData.getLoginId());
-        try {
-            SavingsAccountDTO.ShinhanApiInquirePaymentResponse shinhanApiResponse = shinhanApiResponseMono.block();
-            List<SavingsAccountDTO.PaymentInfo> response = new ArrayList<>();
-            for (SavingsAccountDTO.PaymentInfo paymentInfo : shinhanApiResponse.getRec().get(0).getPaymentInfo()) {
-                response.add(paymentInfo);
-            }
-            return response;
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new CustomException(ErrorCode.BAD_REQUEST);
-        }
-
-    }
-
-    public SavingsAccountDTO.ProductData inquireExpiryInterest(SavingsAccountDTO.ProductData productData) {
-        Mono<SavingsAccountDTO.ShinhanApiInquireExpiryResponse> responseMono = apiService.PostRequestUserKey(
-                "/edu/savings/inquireExpiryInterest",
-                productData.toInquireExpiryRequest(),
-                SavingsAccountDTO.ShinhanApiInquireExpiryResponse.class,
-                productData.getLoginId()
-        );
-
-        try {
-            SavingsAccountDTO.ShinhanApiInquireExpiryResponse response = responseMono.block();
-            return response.getRec().toProductData();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new CustomException(ErrorCode.BAD_REQUEST);
-        }
-    }
-    public SavingsAccountDTO.ProductData inquireEarlyInterest(SavingsAccountDTO.ProductData productData) {
-        Mono<SavingsAccountDTO.ShinhanApiInquireEarlyResponse> responseMono = apiService.PostRequestUserKey(
-                "/edu/savings/inquireEarlyTerminationInterest",
-                productData.toInquireEarlyRequest(),
-                SavingsAccountDTO.ShinhanApiInquireEarlyResponse.class,
-                productData.getLoginId()
-        );
-
-        try {
-            SavingsAccountDTO.ShinhanApiInquireEarlyResponse response = responseMono.block();
-            return response.getRec().toProductData();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new CustomException(ErrorCode.BAD_REQUEST);
-        }
-    }
-    public SavingsAccountDTO.ProductData deleteAccount(SavingsAccountDTO.ProductData productData) {
-        System.out.println("productData: " + productData);
-        Mono<SavingsAccountDTO.ShinhanApiInquireEarlyResponse> responseMono1 = apiService.PostRequestUserKey(
-                "/edu/savings/inquireEarlyTerminationInterest",
-                productData.toInquireEarlyRequest(),
-                SavingsAccountDTO.ShinhanApiInquireEarlyResponse.class,
-                productData.getLoginId()
-        );
-        try {
-            SavingsAccountDTO.ShinhanApiInquireEarlyResponse response1 = responseMono1.block();
-            SavingsAccountDTO.ProductData SaveProductData= response1.getRec().toProductData();
-            int additionalInterestRate = (int)(Double.parseDouble(SaveProductData.getEarlyTerminationInterest()) /10 * savingsAccountRepository.findByAccountNo(SaveProductData.getAccountNo()).get().getAdditional_interest_rate());
-            DemandDepositAccountDTO.ProductData depositProductData = DemandDepositAccountDTO.ProductData.builder()
-                    .loginId(productData.getLoginId())
-                    .depositAccountNo(savingsAccountRepository.findByAccountNo(SaveProductData.getAccountNo()).get().getWithdrawalAccountNo())
-                    .transactionBalance(additionalInterestRate+"")
-                    .withdrawalAccountNo("0013483313292281")
-                    .depositTransactionSummary("우대금리 이자")
-                    .withdrawalTransactionSummary("우대금리 이자")
-                    .build();
-            System.out.println("SaveProductData: " + SaveProductData);
-            System.out.println("depositProductData: " + depositProductData);
-            demandDepositService.transferDepositAccount(depositProductData);
-
-
-
-            Mono<SavingsAccountDTO.ShinhanApideleteAccountResponse> responseMono2 = apiService.PostRequestUserKey(
-                    "/edu/savings/deleteAccount",
-                    productData.toDeleteAccountRequest(),
-                    SavingsAccountDTO.ShinhanApideleteAccountResponse.class,
-                    productData.getLoginId()
-            );
-
-            SavingsAccountDTO.ShinhanApideleteAccountResponse response2 = responseMono2.block();
-            return response2.getRec().toProductData();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new CustomException(ErrorCode.BAD_REQUEST);
-        }
-
-    }
     //적금 계좌 목록 가져오기
     public List<SavingsAccountDTO.SavingAccountListResponse> getSavingAccountList(SavingsAccountDTO.LoginIdData loginIdData) {
         Mono<SavingsAccountDTO.ShinhanApiSavingAccountListResponse> shinhanApiResponseMono
@@ -262,5 +160,115 @@ public class SaveService {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
     }
+
+    //적금 계좌조회
+    public SavingsAccountDTO.InquireAccountResponseData getSavingProductDetail(SavingsAccountDTO.InquireAccountData inquireAccountData) {
+        Mono<SavingsAccountDTO.ShinhanApiInquireAccountResponse> shinhanApiResponseMono
+                = apiService.PostRequestUserKey("/edu/savings/inquireAccount", inquireAccountData.toInquireAccountRequest(), SavingsAccountDTO.ShinhanApiInquireAccountResponse.class, inquireAccountData.getLoginId());
+        try {
+            SavingsAccountDTO.ShinhanApiInquireAccountResponse shinhanApiResponse = shinhanApiResponseMono.block();
+            return shinhanApiResponse.getRec().toInquireAccountResponseData();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+    }
+
+    //적금 납입회차조회
+    public List<SavingsAccountDTO.PaymentInfo> getPaymentList(SavingsAccountDTO.InquirePaymentData inquirePaymentData) {
+        Mono<SavingsAccountDTO.ShinhanApiInquirePaymentResponse> shinhanApiResponseMono
+                = apiService.PostRequestUserKey("/edu/savings/inquirePayment", inquirePaymentData.toInquirePaymentRequest(), SavingsAccountDTO.ShinhanApiInquirePaymentResponse.class, inquirePaymentData.getLoginId());
+        try {
+            SavingsAccountDTO.ShinhanApiInquirePaymentResponse shinhanApiResponse = shinhanApiResponseMono.block();
+            List<SavingsAccountDTO.PaymentInfo> response = new ArrayList<>();
+            for (SavingsAccountDTO.PaymentInfo paymentInfo : shinhanApiResponse.getRec().get(0).getPaymentInfo()) {
+                response.add(paymentInfo);
+            }
+            return response;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
+    }
+
+    //만기이자 조회
+    public SavingsAccountDTO.InquireExpiryResponseData inquireExpiryInterest(SavingsAccountDTO.InquireExpiryData inquireExpiryData) {
+        Mono<SavingsAccountDTO.ShinhanApiInquireExpiryResponse> responseMono = apiService.PostRequestUserKey(
+                "/edu/savings/inquireExpiryInterest",
+                inquireExpiryData.toInquireExpiryRequest(),
+                SavingsAccountDTO.ShinhanApiInquireExpiryResponse.class,
+                inquireExpiryData.getLoginId()
+        );
+
+        try {
+            SavingsAccountDTO.ShinhanApiInquireExpiryResponse response = responseMono.block();
+            return response.getRec().toInquireExpiryResponseData();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+    }
+
+    //중도해지 이자 조회
+    public SavingsAccountDTO.InquireEarlyResponseData inquireEarlyInterest(SavingsAccountDTO.InquireEarlyData inquireEarlyData) {
+        Mono<SavingsAccountDTO.ShinhanApiInquireEarlyResponse> responseMono = apiService.PostRequestUserKey(
+                "/edu/savings/inquireEarlyTerminationInterest",
+                inquireEarlyData.toInquireEarlyRequest(),
+                SavingsAccountDTO.ShinhanApiInquireEarlyResponse.class,
+                inquireEarlyData.getLoginId()
+        );
+
+        try {
+            SavingsAccountDTO.ShinhanApiInquireEarlyResponse response = responseMono.block();
+            return response.getRec().toInquireEarlyResponseData();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+    }
+    //중도해지
+    public SavingsAccountDTO.DeleteAccountResponseData deleteAccount(SavingsAccountDTO.InquireEarlyData inquireEarlyData) {
+        System.out.println("inquireEarlyData: " + inquireEarlyData);
+        Mono<SavingsAccountDTO.ShinhanApiInquireEarlyResponse> responseMono1 = apiService.PostRequestUserKey(
+                "/edu/savings/inquireEarlyTerminationInterest",
+                inquireEarlyData.toInquireEarlyRequest(),
+                SavingsAccountDTO.ShinhanApiInquireEarlyResponse.class,
+                inquireEarlyData.getLoginId()
+        );
+        try {
+            SavingsAccountDTO.ShinhanApiInquireEarlyResponse response1 = responseMono1.block();
+            SavingsAccountDTO.InquireEarlyResponseData SaveProductData= response1.getRec().toInquireEarlyResponseData();
+            int additionalInterestRate = (int)(Double.parseDouble(SaveProductData.getEarlyTerminationInterest()) /10 * savingsAccountRepository.findByAccountNo(SaveProductData.getAccountNo()).get().getAdditional_interest_rate());
+            DemandDepositAccountDTO.ProductData depositProductData = DemandDepositAccountDTO.ProductData.builder()
+                    .loginId(inquireEarlyData.getLoginId())
+                    .depositAccountNo(savingsAccountRepository.findByAccountNo(SaveProductData.getAccountNo()).get().getWithdrawalAccountNo())
+                    .transactionBalance(additionalInterestRate+"")
+                    .withdrawalAccountNo("0013483313292281")
+                    .depositTransactionSummary("우대금리 이자")
+                    .withdrawalTransactionSummary("우대금리 이자")
+                    .build();
+            System.out.println("SaveProductData: " + SaveProductData);
+            System.out.println("depositProductData: " + depositProductData);
+            demandDepositService.transferDepositAccount(depositProductData);
+
+
+
+            Mono<SavingsAccountDTO.ShinhanApideleteAccountResponse> responseMono2 = apiService.PostRequestUserKey(
+                    "/edu/savings/deleteAccount",
+                    inquireEarlyData.toInquireEarlyRequest(),
+                    SavingsAccountDTO.ShinhanApideleteAccountResponse.class,
+                    inquireEarlyData.getLoginId()
+            );
+
+            SavingsAccountDTO.ShinhanApideleteAccountResponse response2 = responseMono2.block();
+            return response2.getRec().toDeleteAccountResponseData();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
+    }
+
 
 }
