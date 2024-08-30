@@ -1,9 +1,6 @@
 package com.earthdefender.earthcpr.service;
 
-import com.earthdefender.earthcpr.DTO.ChallengeDTO;
-import com.earthdefender.earthcpr.DTO.SavingProductDTO;
-import com.earthdefender.earthcpr.DTO.SavingsAccountDTO;
-import com.earthdefender.earthcpr.DTO.ShinhanApiDTO;
+import com.earthdefender.earthcpr.DTO.*;
 import com.earthdefender.earthcpr.model.Challenge;
 import com.earthdefender.earthcpr.model.SavingsAccount;
 import com.earthdefender.earthcpr.model.SavingsProduct;
@@ -40,6 +37,7 @@ public class SaveService {
     private final UserRepository userRepository;
     private final SavingsAccountRepository savingsAccountRepository;
     private final ApiService apiService;
+    private final DemandDepositService demandDepositService;
 
 
     @Transactional
@@ -95,8 +93,9 @@ public class SaveService {
             SavingsAccount savingsAccount = SavingsAccount.builder()
                     .user(userOptional.get())
                     .savingProduct(productOptional.get())
-                    .account_no(response.getRec().getAccountNo())
+                    .accountNo(response.getRec().getAccountNo())
                     .additional_interest_rate(Double.parseDouble(response.getRec().getInterestRate()))
+                    .withdrawalAccountNo(productData.getWithdrawalAccountNo())
                     .build();
             System.out.println("savingsAccount: " + savingsAccount);
             savingsAccountRepository.save(savingsAccount);
@@ -175,7 +174,7 @@ public class SaveService {
 
     public SavingsAccountDTO.ProductData inquireExpiryInterest(SavingsAccountDTO.ProductData productData) {
         Mono<SavingsAccountDTO.ShinhanApiInquireExpiryResponse> responseMono = apiService.PostRequestUserKey(
-                "https://finopenapi.ssafy.io/ssafy/api/v1/edu/savings/inquireExpiryInterest",
+                "/edu/savings/inquireExpiryInterest",
                 productData.toInquireExpiryRequest(),
                 SavingsAccountDTO.ShinhanApiInquireExpiryResponse.class,
                 productData.getLoginId()
@@ -191,7 +190,7 @@ public class SaveService {
     }
     public SavingsAccountDTO.ProductData inquireEarlyInterest(SavingsAccountDTO.ProductData productData) {
         Mono<SavingsAccountDTO.ShinhanApiInquireEarlyResponse> responseMono = apiService.PostRequestUserKey(
-                "https://finopenapi.ssafy.io/ssafy/api/v1/edu/savings/inquireEarlyTerminationInterest",
+                "/edu/savings/inquireEarlyTerminationInterest",
                 productData.toInquireEarlyRequest(),
                 SavingsAccountDTO.ShinhanApiInquireEarlyResponse.class,
                 productData.getLoginId()
@@ -206,19 +205,46 @@ public class SaveService {
         }
     }
     public SavingsAccountDTO.ProductData deleteAccount(SavingsAccountDTO.ProductData productData) {
-        Mono<SavingsAccountDTO.ShinhanApideleteAccountResponse> responseMono = apiService.PostRequestUserKey(
-                "https://finopenapi.ssafy.io/ssafy/api/v1/edu/savings/deleteAccount",
+        System.out.println("productData: " + productData);
+        Mono<SavingsAccountDTO.ShinhanApiInquireEarlyResponse> responseMono1 = apiService.PostRequestUserKey(
+                "/edu/savings/inquireEarlyTerminationInterest",
                 productData.toInquireEarlyRequest(),
-                SavingsAccountDTO.ShinhanApideleteAccountResponse.class,
+                SavingsAccountDTO.ShinhanApiInquireEarlyResponse.class,
                 productData.getLoginId()
         );
-
         try {
-            SavingsAccountDTO.ShinhanApideleteAccountResponse response = responseMono.block();
-            return response.getRec().toProductData();
+            SavingsAccountDTO.ShinhanApiInquireEarlyResponse response1 = responseMono1.block();
+            SavingsAccountDTO.ProductData SaveProductData= response1.getRec().toProductData();
+            int additionalInterestRate = (int)(Double.parseDouble(SaveProductData.getEarlyTerminationInterest()) /10 * savingsAccountRepository.findByAccountNo(SaveProductData.getAccountNo()).get().getAdditional_interest_rate());
+            DemandDepositAccountDTO.ProductData depositProductData = DemandDepositAccountDTO.ProductData.builder()
+                    .loginId(productData.getLoginId())
+                    .depositAccountNo(savingsAccountRepository.findByAccountNo(SaveProductData.getAccountNo()).get().getWithdrawalAccountNo())
+                    .transactionBalance(additionalInterestRate+"")
+                    .withdrawalAccountNo("0013483313292281")
+                    .depositTransactionSummary("우대금리 이자")
+                    .withdrawalTransactionSummary("우대금리 이자")
+                    .build();
+            System.out.println("SaveProductData: " + SaveProductData);
+            System.out.println("depositProductData: " + depositProductData);
+            demandDepositService.transferDepositAccount(depositProductData);
+
+
+
+            Mono<SavingsAccountDTO.ShinhanApideleteAccountResponse> responseMono2 = apiService.PostRequestUserKey(
+                    "/edu/savings/deleteAccount",
+                    productData.toDeleteAccountRequest(),
+                    SavingsAccountDTO.ShinhanApideleteAccountResponse.class,
+                    productData.getLoginId()
+            );
+
+            SavingsAccountDTO.ShinhanApideleteAccountResponse response2 = responseMono2.block();
+            return response2.getRec().toProductData();
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
+
     }
+
+
 }

@@ -25,7 +25,8 @@ public class SavingsAccount {
     @JoinColumn(name="saving_product_id")
     private SavingsProduct savingProduct;
 
-    private String account_no;
+    private String accountNo;
 
     private double additional_interest_rate;
+    private String withdrawalAccountNo;
 }

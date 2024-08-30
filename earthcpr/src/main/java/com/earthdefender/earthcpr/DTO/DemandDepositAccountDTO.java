@@ -108,6 +108,156 @@ public class DemandDepositAccountDTO {
         private String currencyName;
 
     }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShinhanApiHistoryResponse {
+        @JsonProperty("Header")
+        private ShinhanApiDTO.ResponseHeader header;
+
+        @JsonProperty("REC")
+        private HistoryResponse rec;
+    }
+
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HistoryResponse {
+        @JsonProperty("totalCount")
+        private String totalCount;
+
+        @JsonProperty("list")
+        private List<TransactionRecord> list;
+    }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TransactionRecord {
+        @JsonProperty("transactionUniqueNo")
+        private String transactionUniqueNo;
+
+        @JsonProperty("transactionDate")
+        private String transactionDate;
+
+        @JsonProperty("transactionTime")
+        private String transactionTime;
+
+        @JsonProperty("transactionType")
+        private String transactionType;
+
+        @JsonProperty("transactionTypeName")
+        private String transactionTypeName;
+
+        @JsonProperty("transactionAccountNo")
+        private String transactionAccountNo;
+
+        @JsonProperty("transactionBalance")
+        private String transactionBalance;
+
+        @JsonProperty("transactionAfterBalance")
+        private String transactionAfterBalance;
+
+        @JsonProperty("transactionSummary")
+        private String transactionSummary;
+
+        @JsonProperty("transactionMemo")
+        private String transactionMemo;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HistoryRequest extends ShinhanApiDTO.RequestHeader {
+        @JsonProperty("loginId")
+        private String loginId;
+
+        @JsonProperty("accountNo")
+        private String accountNo;
+
+        @JsonProperty("startDate")
+        private String startDate;
+
+        @JsonProperty("endDate")
+        private String endDate;
+
+        @JsonProperty("transactionType")
+        private String transactionType;
+
+        @JsonProperty("orderByType")
+        private String orderByType;
+
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShinhanApiTransferResponse {
+        @JsonProperty("Header")
+        private ShinhanApiDTO.ResponseHeader header;
+
+        @JsonProperty("REC")
+        private List<TransferResponse> rec;
+    }
+
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TransferResponse {
+        @JsonProperty("transactionUniqueNo")
+        private String transactionUniqueNo;
+
+        @JsonProperty("accountNo")
+        private String accountNo;
+
+        @JsonProperty("transactionDate")
+        private String transactionDate;
+
+        @JsonProperty("transactionType")
+        private String transactionType;
+
+        @JsonProperty("transactionTypeName")
+        private String transactionTypeName;
+
+        @JsonProperty("transactionAccountNo")
+        private String transactionAccountNo;
+        public ProductData toProductData() {
+            return ProductData.builder()
+                    .transactionUniqueNo(transactionUniqueNo)
+                    .accountNo(accountNo)
+                    .transactionDate(transactionDate)
+                    .transactionType(transactionType)
+                    .transactionTypeName(transactionTypeName)
+                    .transactionAccountNo(transactionAccountNo)
+                    .build();
+        }
+
+    }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TransferRequest extends ShinhanApiDTO.RequestHeader {
+        @JsonProperty("loginId")
+        private String loginId;
+        @JsonProperty("depositAccountNo")
+        private String depositAccountNo;
+        @JsonProperty("transactionBalance")
+        private String transactionBalance;
+        @JsonProperty("withdrawalAccountNo")
+        private String withdrawalAccountNo;
+        @JsonProperty("depositTransactionSummary")
+        private String depositTransactionSummary;
+        @JsonProperty("withdrawalTransactionSummary")
+        private String withdrawalTransactionSummary;
+    }
 
     @Data
     @Builder
@@ -116,6 +266,24 @@ public class DemandDepositAccountDTO {
     public static class ProductData {
         private String loginId;
         private String accountTypeUniqueNo;
+        private String depositAccountNo;
+        private String transactionBalance;
+        private String withdrawalAccountNo;
+        private String depositTransactionSummary;
+        private String withdrawalTransactionSummary;
+        private String transactionUniqueNo;
+        private String accountNo;
+        private String transactionDate;
+        private String transactionType;
+        private String transactionTypeName;
+        private String transactionAccountNo;
+        private String transactionTime;
+        private String transactionAfterBalance;
+        private String transactionSummary;
+        private String transactionMemo;
+        private String startDate;
+        private String endDate;
+        private String orderByType;
         public CreateAccountRequest toCreateAccountRequest(String accountTypeUniqueNo) {
             return CreateAccountRequest.builder()
                     .loginId(loginId)
@@ -125,6 +293,26 @@ public class DemandDepositAccountDTO {
         public AccountListRequest toAccountListRequest() {
             return AccountListRequest.builder()
                     .loginId(loginId)
+                    .build();
+        }
+        public TransferRequest toTransferRequest() {
+            return TransferRequest.builder()
+                    .loginId(loginId)
+                    .depositAccountNo(depositAccountNo)
+                    .transactionBalance(transactionBalance)
+                    .withdrawalAccountNo(withdrawalAccountNo)
+                    .depositTransactionSummary(depositTransactionSummary)
+                    .withdrawalTransactionSummary(withdrawalTransactionSummary)
+                    .build();
+        }
+        public HistoryRequest toHistoryRequest() {
+            return HistoryRequest.builder()
+                    .loginId(loginId)
+                    .accountNo(accountNo)
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .transactionType(transactionType)
+                    .orderByType(orderByType)
                     .build();
         }
     }

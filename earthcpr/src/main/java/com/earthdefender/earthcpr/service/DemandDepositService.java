@@ -110,4 +110,41 @@ public class DemandDepositService {
             throw new RuntimeException("Failed to create demand deposit account");
         }
     }
+    public DemandDepositAccountDTO.ProductData transferDepositAccount(DemandDepositAccountDTO.ProductData productData) {
+        Mono<DemandDepositAccountDTO.ShinhanApiTransferResponse> responseMono = apiService.PostRequestUserKey(
+                "/edu/demandDeposit/updateDemandDepositAccountTransfer",
+                productData.toTransferRequest(),
+                DemandDepositAccountDTO.ShinhanApiTransferResponse.class
+                , productData.getLoginId()
+        );
+        try {
+            DemandDepositAccountDTO.ShinhanApiTransferResponse response = responseMono.block();
+            return response.getRec().get(1).toProductData();
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException("Failed to transfer deposit account");
+        }
+    }
+
+    public List<DemandDepositAccountDTO.TransactionRecord> getDepositHistory(DemandDepositAccountDTO.ProductData productData) {
+        Mono<DemandDepositAccountDTO.ShinhanApiHistoryResponse> responseMono = apiService.PostRequestUserKey(
+                "/edu/demandDeposit/inquireTransactionHistoryList",
+                productData.toHistoryRequest(),
+                DemandDepositAccountDTO.ShinhanApiHistoryResponse.class,
+                productData.getLoginId()
+        );
+        System.out.println(productData);
+        try {
+            DemandDepositAccountDTO.ShinhanApiHistoryResponse shinhanApiHistoryResponse = responseMono.block();
+            List<DemandDepositAccountDTO.TransactionRecord> response = new ArrayList<>();
+            for(DemandDepositAccountDTO.TransactionRecord transactionRecord : shinhanApiHistoryResponse.getRec().getList()) {
+                response.add(transactionRecord);
+            }
+            return response;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException("Failed to transfer deposit account");
+        }
+    }
 }

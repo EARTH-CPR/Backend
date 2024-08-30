@@ -34,5 +34,9 @@ public class DemandDepositController {
     public ResponseEntity<ApiResponseEntity> getDemandDepositAccountList(@Valid @RequestBody DemandDepositAccountDTO.ProductData productData) {
         return ApiResponseEntity.toResponseEntity(demandDepositService.getDemandDepositAccounts(productData));
     }
+    @PostMapping("/get/deposithistory")
+    public ResponseEntity<ApiResponseEntity> getDepositHistory(@Valid @RequestBody DemandDepositAccountDTO.ProductData productData) {
+        return ApiResponseEntity.toResponseEntity(demandDepositService.getDepositHistory(productData));
+    }
 
 }
