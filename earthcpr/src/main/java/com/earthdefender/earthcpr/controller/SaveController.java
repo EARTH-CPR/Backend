@@ -33,6 +33,12 @@ public class SaveController {
         List<SavingProductDTO.ProductData> savingProductsResponseList =  saveService.getSavingProductList();
         return ApiResponseEntity.toResponseEntity(savingProductsResponseList);
     }
+    //적금계좌목록조회
+    @PostMapping("/get/savingaccount")
+    public ResponseEntity<ApiResponseEntity> getSavingAccount(@Valid @RequestBody SavingsAccountDTO.ProductData productData) {
+        List<SavingsAccountDTO.SavingAccountListResponse> savingAccount =  saveService.getSavingAccountList(productData);
+        return ApiResponseEntity.toResponseEntity(savingAccount);
+    }
 
     @PostMapping("/create/savingaccount")
     public ResponseEntity<ApiResponseEntity> createSavingsAccount(@Valid @RequestBody SavingsAccountDTO.ProductData productData) {

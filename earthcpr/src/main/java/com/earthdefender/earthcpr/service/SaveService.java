@@ -245,6 +245,22 @@ public class SaveService {
         }
 
     }
+    //적금 계좌 목록 가져오기
+    public List<SavingsAccountDTO.SavingAccountListResponse> getSavingAccountList(SavingsAccountDTO.ProductData productData) {
+        Mono<SavingsAccountDTO.ShinhanApiSavingAccountListResponse> shinhanApiResponseMono
+                = apiService.PostRequestUserKey("/edu/savings/inquireAccountList",new ShinhanApiDTO.RequestHeader(), SavingsAccountDTO.ShinhanApiSavingAccountListResponse.class, productData.getLoginId());
 
+        try {
+            SavingsAccountDTO.ShinhanApiSavingAccountListResponse shinhanApiResponse = shinhanApiResponseMono.block();
+            List<SavingsAccountDTO.SavingAccountListResponse> response = new ArrayList<>();
+            for (SavingsAccountDTO.SavingAccountListResponse savingAccountListResponse : shinhanApiResponse.getRec().getList()) {
+                response.add(savingAccountListResponse);
+            }
+            return response;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+    }
 
 }

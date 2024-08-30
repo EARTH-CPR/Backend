@@ -35,8 +35,8 @@ public class UserService {
             userRepository.save(User.builder()
                     .loginId(userData.getLoginId())
                     .password(userData.getPassword())
-                    .user_nickname(userData.getUserNickname())
-                    .user_key(tmp.getUser_key())
+                    .userNickname(userData.getUserNickname())
+                    .userKey(tmp.getUserKey())
                     .build());
             System.out.println(tmp);
         } catch (Exception e) {
@@ -44,7 +44,7 @@ public class UserService {
         }
     }
     public void loginUser(UserDTO.UserLoginRequest loginRequest) {
-        Optional<User> user = userRepository.findByLoginId(loginRequest.getLogin_id());
+        Optional<User> user = userRepository.findByLoginId(loginRequest.getLoginId());
         if (user.isEmpty() || !user.get().getPassword().equals(loginRequest.getPassword())) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }

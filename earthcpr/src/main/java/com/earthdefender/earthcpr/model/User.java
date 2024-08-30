@@ -18,6 +18,6 @@ public class User {
     @Column(nullable = false)
     private String loginId;
     private String password;
-    private String user_key;
-    private String user_nickname;
+    private String userKey;
+    private String userNickname;
 }
