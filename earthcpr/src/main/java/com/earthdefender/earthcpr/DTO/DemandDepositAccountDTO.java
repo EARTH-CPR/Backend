@@ -41,6 +41,7 @@ public class DemandDepositAccountDTO {
         @JsonProperty("REC")
         private AccountResponseData rec;
     }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -69,6 +70,7 @@ public class DemandDepositAccountDTO {
         private String accountBalance;
 
     }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -108,6 +110,7 @@ public class DemandDepositAccountDTO {
         private String currencyName;
 
     }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -132,6 +135,7 @@ public class DemandDepositAccountDTO {
         @JsonProperty("list")
         private List<TransactionRecord> list;
     }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -228,8 +232,9 @@ public class DemandDepositAccountDTO {
 
         @JsonProperty("transactionAccountNo")
         private String transactionAccountNo;
-        public ProductData toProductData() {
-            return ProductData.builder()
+
+        public TransferResponseData toTransferResponseData() {
+            return TransferResponseData.builder()
                     .transactionUniqueNo(transactionUniqueNo)
                     .accountNo(accountNo)
                     .transactionDate(transactionDate)
@@ -240,6 +245,21 @@ public class DemandDepositAccountDTO {
         }
 
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TransferResponseData {
+        private String transactionUniqueNo;
+        private String accountNo;
+        private String transactionDate;
+        private String transactionType;
+        private String transactionTypeName;
+        private String transactionAccountNo;
+    }
+
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -258,6 +278,83 @@ public class DemandDepositAccountDTO {
         @JsonProperty("withdrawalTransactionSummary")
         private String withdrawalTransactionSummary;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AccountListRequestData {
+        private String loginId;
+
+        public AccountListRequest toAccountListRequest() {
+            return AccountListRequest.builder()
+                    .loginId(loginId)
+                    .build();
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CreateAccountData {
+        private String loginId;
+        private String accountTypeUniqueNo;
+
+        public CreateAccountRequest toCreateAccountRequest(String accountTypeUniqueNo) {
+            return CreateAccountRequest.builder()
+                    .loginId(loginId)
+                    .accountTypeUniqueNo(accountTypeUniqueNo)
+                    .build();
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TransferRequestData {
+        private String loginId;
+        private String depositAccountNo;
+        private String transactionBalance;
+        private String withdrawalAccountNo;
+        private String depositTransactionSummary;
+        private String withdrawalTransactionSummary;
+
+        public TransferRequest toTransferRequest() {
+            return TransferRequest.builder()
+                    .loginId(loginId)
+                    .depositAccountNo(depositAccountNo)
+                    .transactionBalance(transactionBalance)
+                    .withdrawalAccountNo(withdrawalAccountNo)
+                    .depositTransactionSummary(depositTransactionSummary)
+                    .withdrawalTransactionSummary(withdrawalTransactionSummary)
+                    .build();
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HistoryData {
+        private String loginId;
+        private String accountNo;
+        private String startDate;
+        private String endDate;
+        private String transactionType;
+        private String orderByType;
+    public HistoryRequest toHistoryRequest() {
+        return HistoryRequest.builder()
+                .loginId(loginId)
+                .accountNo(accountNo)
+                .startDate(startDate)
+                .endDate(endDate)
+                .transactionType(transactionType)
+                .orderByType(orderByType)
+                .build();
+    }
+}
 
     @Data
     @Builder

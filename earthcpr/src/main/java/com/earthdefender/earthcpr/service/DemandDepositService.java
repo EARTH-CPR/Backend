@@ -56,13 +56,14 @@ public class DemandDepositService {
         }
     }
 
-    public List<DemandDepositAccountDTO.AccountListData> getDemandDepositAccounts(DemandDepositAccountDTO.ProductData productData) {
+    //계좌 목록 조회
+    public List<DemandDepositAccountDTO.AccountListData> getDemandDepositAccounts(DemandDepositAccountDTO.AccountListRequestData accountListRequestData) {
         List<DemandDepositAccountDTO.AccountListData> response = new ArrayList<>();
         Mono<DemandDepositAccountDTO.ShinhanApiGetDepositAccountsResponse> shinhanApiResponseMono = apiService.PostRequestUserKey(
                 "/edu/demandDeposit/inquireDemandDepositAccountList",
-                productData.toAccountListRequest(),
+                accountListRequestData.toAccountListRequest(),
                 DemandDepositAccountDTO.ShinhanApiGetDepositAccountsResponse.class
-                , productData.getLoginId()
+                , accountListRequestData.getLoginId()
         );
         try{
             DemandDepositAccountDTO.ShinhanApiGetDepositAccountsResponse shinhanApiGetDepositAccountsResponse = shinhanApiResponseMono.block();
@@ -82,15 +83,15 @@ public class DemandDepositService {
         return response;
     }
 
+    //입출금 계좌 생성
     @Transactional
-    public void createDemandDepositAccount(DemandDepositAccountDTO.ProductData productData) {
-
+    public void createDemandDepositAccount(DemandDepositAccountDTO.CreateAccountData createAccountData) {
 
         Mono<DemandDepositAccountDTO.CreateAccountResponse> responseMono = apiService.PostRequestUserKey(
                 "/edu/demandDeposit/createDemandDepositAccount",
-                productData.toCreateAccountRequest(accountTypeUniqueNo),
+                createAccountData.toCreateAccountRequest(accountTypeUniqueNo),
                 DemandDepositAccountDTO.CreateAccountResponse.class
-                , productData.getLoginId()
+                , createAccountData.getLoginId()
         );
 
         try {
@@ -99,7 +100,7 @@ public class DemandDepositService {
                     .orElseThrow(() -> new RuntimeException("Deposit product not found"));
 
             DemandDepositAccount demandDepositAccount = DemandDepositAccount.builder()
-                    .user(userRepository.findByLoginId(productData.getLoginId()).get())
+                    .user(userRepository.findByLoginId(createAccountData.getLoginId()).get())
                     .depositProduct(depositProduct)
                     .account_no(response.getRec().getAccountNo())
                     .build();
@@ -110,16 +111,18 @@ public class DemandDepositService {
             throw new RuntimeException("Failed to create demand deposit account");
         }
     }
-    public DemandDepositAccountDTO.ProductData transferDepositAccount(DemandDepositAccountDTO.ProductData productData) {
+
+    //입출금 계좌 이체
+    public DemandDepositAccountDTO.TransferResponseData transferDepositAccount(DemandDepositAccountDTO.TransferRequestData transferRequestData) {
         Mono<DemandDepositAccountDTO.ShinhanApiTransferResponse> responseMono = apiService.PostRequestUserKey(
                 "/edu/demandDeposit/updateDemandDepositAccountTransfer",
-                productData.toTransferRequest(),
+                transferRequestData.toTransferRequest(),
                 DemandDepositAccountDTO.ShinhanApiTransferResponse.class
-                , productData.getLoginId()
+                , transferRequestData.getLoginId()
         );
         try {
             DemandDepositAccountDTO.ShinhanApiTransferResponse response = responseMono.block();
-            return response.getRec().get(1).toProductData();
+            return response.getRec().get(1).toTransferResponseData();
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -127,14 +130,15 @@ public class DemandDepositService {
         }
     }
 
-    public List<DemandDepositAccountDTO.TransactionRecord> getDepositHistory(DemandDepositAccountDTO.ProductData productData) {
+    //입출금 거래 내역
+    public List<DemandDepositAccountDTO.TransactionRecord> getDepositHistory(DemandDepositAccountDTO.HistoryData historyData) {
         Mono<DemandDepositAccountDTO.ShinhanApiHistoryResponse> responseMono = apiService.PostRequestUserKey(
                 "/edu/demandDeposit/inquireTransactionHistoryList",
-                productData.toHistoryRequest(),
+                historyData.toHistoryRequest(),
                 DemandDepositAccountDTO.ShinhanApiHistoryResponse.class,
-                productData.getLoginId()
+                historyData.getLoginId()
         );
-        System.out.println(productData);
+        System.out.println(historyData);
         try {
             DemandDepositAccountDTO.ShinhanApiHistoryResponse shinhanApiHistoryResponse = responseMono.block();
             List<DemandDepositAccountDTO.TransactionRecord> response = new ArrayList<>();
