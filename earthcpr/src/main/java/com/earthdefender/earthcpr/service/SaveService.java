@@ -240,7 +240,7 @@ public class SaveService {
             SavingsAccountDTO.ShinhanApiInquireEarlyResponse response1 = responseMono1.block();
             SavingsAccountDTO.InquireEarlyResponseData SaveProductData= response1.getRec().toInquireEarlyResponseData();
             int additionalInterestRate = (int)(Double.parseDouble(SaveProductData.getEarlyTerminationInterest()) /10 * savingsAccountRepository.findByAccountNo(SaveProductData.getAccountNo()).get().getAdditional_interest_rate());
-            DemandDepositAccountDTO.ProductData depositProductData = DemandDepositAccountDTO.ProductData.builder()
+            DemandDepositAccountDTO.TransferRequestData depositProductData = DemandDepositAccountDTO.TransferRequestData.builder()
                     .loginId(inquireEarlyData.getLoginId())
                     .depositAccountNo(savingsAccountRepository.findByAccountNo(SaveProductData.getAccountNo()).get().getWithdrawalAccountNo())
                     .transactionBalance(additionalInterestRate+"")

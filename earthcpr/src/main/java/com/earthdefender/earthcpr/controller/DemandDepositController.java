@@ -26,17 +26,17 @@ public class DemandDepositController {
         return ApiResponseEntity.toResponseEntity();
     }
     @PostMapping("/create/depositaccount")
-    public ResponseEntity<ApiResponseEntity> createDemandDepositAccount(@Valid @RequestBody DemandDepositAccountDTO.ProductData productData) {
-        demandDepositService.createDemandDepositAccount(productData);
+    public ResponseEntity<ApiResponseEntity> createDemandDepositAccount(@Valid @RequestBody DemandDepositAccountDTO.CreateAccountData createAccountData) {
+        demandDepositService.createDemandDepositAccount(createAccountData);
         return ApiResponseEntity.toResponseEntity();
     }
     @PostMapping("/get/depositaccounts")
-    public ResponseEntity<ApiResponseEntity> getDemandDepositAccountList(@Valid @RequestBody DemandDepositAccountDTO.ProductData productData) {
-        return ApiResponseEntity.toResponseEntity(demandDepositService.getDemandDepositAccounts(productData));
+    public ResponseEntity<ApiResponseEntity> getDemandDepositAccountList(@Valid @RequestBody DemandDepositAccountDTO.AccountListRequestData accountListRequestData) {
+        return ApiResponseEntity.toResponseEntity(demandDepositService.getDemandDepositAccounts(accountListRequestData));
     }
     @PostMapping("/get/deposithistory")
-    public ResponseEntity<ApiResponseEntity> getDepositHistory(@Valid @RequestBody DemandDepositAccountDTO.ProductData productData) {
-        return ApiResponseEntity.toResponseEntity(demandDepositService.getDepositHistory(productData));
+    public ResponseEntity<ApiResponseEntity> getDepositHistory(@Valid @RequestBody DemandDepositAccountDTO.HistoryData historyData) {
+        return ApiResponseEntity.toResponseEntity(demandDepositService.getDepositHistory(historyData));
     }
 
 }
