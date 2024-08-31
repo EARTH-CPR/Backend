@@ -23,15 +23,21 @@ public class ChallengeController {
     private final ChallengeService challengeService;
 
     @PostMapping(value = "/verification", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<ApiResponseEntity> challengeVerification(@RequestPart(value = "file", required = true) MultipartFile file,
+    public ResponseEntity<ApiResponseEntity> challengeVerification(@RequestPart(value = "file", required = false) MultipartFile file,
                                                                    @RequestPart(value = "savingsAccountId", required = true) String savingsAccountId,
-                                                                   @RequestPart(value = "challengeId", required = true) String challengeId) {
+                                                                   @RequestPart(value = "challengeId", required = true) String challengeId,
+                                                                   @RequestPart(value = "data", required = true) String data) {
 
-        return ApiResponseEntity.toResponseEntity(challengeService.challengeVerification(file, savingsAccountId, challengeId));
+        return ApiResponseEntity.toResponseEntity(challengeService.challengeVerification(file, savingsAccountId, challengeId, Integer.parseInt(data)));
     }
 
     @PostMapping("/get/success")
     public ResponseEntity<ApiResponseEntity> getChallengeSuccess(@RequestBody ChallengeDTO.GetChallengeSuccessRequest request) {
         return ApiResponseEntity.toResponseEntity(challengeService.getChallengeSuccess(request));
+    }
+
+    @GetMapping("/get/quize")
+    public ResponseEntity<ApiResponseEntity> getQuize() {
+        return ApiResponseEntity.toResponseEntity(challengeService.getQuize());
     }
 }

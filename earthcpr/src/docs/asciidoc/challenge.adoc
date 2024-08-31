@@ -1,4 +1,4 @@
 == Challenge
 
-=== 챌린지 검증
-operation::user-controller-test/create-user-test[snippets='http-request,request-fields,http-response,response-fields']
+=== 퀴즈 가져오기
+operation::challenge-controller-test/get-quizes[snippets='http-request,http-response,response-fields']
