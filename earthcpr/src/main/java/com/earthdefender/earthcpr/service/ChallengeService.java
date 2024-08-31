@@ -58,11 +58,13 @@ public class ChallengeService {
             throw new CustomException(ErrorCode.NOT_FOUND);
         }
 
-        if (challenge.get().getVerification() == 0 || challenge.get().getVerification() == 1) {
+        if (challenge.get().getVerification() == 0 || challenge.get().getVerification() == 1 || challenge.get().getVerification() == 2) {
             if (challenge.get().getVerification() == 0) {
                 earthcprAiUri = earthcprAiUri + "/food";
             } else if (challenge.get().getVerification() == 1) {
                 earthcprAiUri = earthcprAiUri + "/receipt";
+            } else if (challenge.get().getVerification() == 2) {
+                earthcprAiUri = earthcprAiUri + "/work";
             }
 
             // earthcprAi API에 요청
