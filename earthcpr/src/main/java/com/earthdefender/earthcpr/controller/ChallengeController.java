@@ -26,7 +26,7 @@ public class ChallengeController {
     public ResponseEntity<ApiResponseEntity> challengeVerification(@RequestPart(value = "file", required = false) MultipartFile file,
                                                                    @RequestPart(value = "savingsAccountId", required = true) String savingsAccountId,
                                                                    @RequestPart(value = "challengeId", required = true) String challengeId,
-                                                                   @RequestPart(value = "data", required = true) String data) {
+                                                                   @RequestPart(value = "data", required = false) String data) {
 
         return ApiResponseEntity.toResponseEntity(challengeService.challengeVerification(file, savingsAccountId, challengeId, Integer.parseInt(data)));
     }
