@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/api/v1/challenge")
 @RequiredArgsConstructor
@@ -27,8 +29,12 @@ public class ChallengeController {
                                                                    @RequestPart(value = "savingsAccountId", required = true) String savingsAccountId,
                                                                    @RequestPart(value = "challengeId", required = true) String challengeId,
                                                                    @RequestPart(value = "data", required = false) String data) {
+        int value = 0;
+        if (Objects.nonNull(data)) {
+            value = Integer.parseInt(data);
+        }
 
-        return ApiResponseEntity.toResponseEntity(challengeService.challengeVerification(file, savingsAccountId, challengeId, Integer.parseInt(data)));
+        return ApiResponseEntity.toResponseEntity(challengeService.challengeVerification(file, savingsAccountId, challengeId, value));
     }
 
     @PostMapping("/get/success")
