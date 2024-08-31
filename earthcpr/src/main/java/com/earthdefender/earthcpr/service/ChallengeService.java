@@ -80,10 +80,7 @@ public class ChallengeService {
                             .build();
                 }
             }
-            return ChallengeDTO.ChallengeSuccessResponse.builder()
-                    .success(false)
-                    .message("챌린지 실패 다시 인증 해주세요.")
-                    .build();
+            throw new CustomException(ErrorCode.NOT_FOUND);
         }
 
         if (challenge.get().getVerification() == 0 || challenge.get().getVerification() == 1 || challenge.get().getVerification() == 2) {
@@ -129,10 +126,7 @@ public class ChallengeService {
             }
         }
 
-        return ChallengeDTO.ChallengeSuccessResponse.builder()
-                .success(false)
-                .message("챌린지 실패 다시 인증 해주세요.")
-                .build();
+        throw new CustomException(ErrorCode.NOT_FOUND);
     }
 
     public List<ChallengeDTO.ChallengeSuccessList> getChallengeSuccess(ChallengeDTO.GetChallengeSuccessRequest challengeSuccessRequest) {
