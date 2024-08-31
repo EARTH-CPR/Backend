@@ -54,5 +54,5 @@ jobs:
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/earthcpr-backend:latest
           docker stop earthcpr-backend || true
           docker rm earthcpr-backend || true
-          docker run -d --name earthcpr-backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/earthcpr-backend:latest
+          docker run -d --name earthcpr-backend -p 8080:8080 -e TZ=Asia/Seoul ${{ secrets.DOCKERHUB_USERNAME }}/earthcpr-backend:latest
         '
