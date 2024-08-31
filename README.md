@@ -2,6 +2,10 @@
 
 이 저장소는 Earth CPR 프로젝트의 소스 코드를 포함하고 있습니다. GitHub Actions와 Docker를 사용해 CI/CD 환경을 구축하여 AWS에 자동으로 배포되도록 설정했습니다. 메인 브랜치에 커밋이 발생하면, 애플리케이션이 자동으로 빌드되고 AWS에 배포됩니다.
 
+## API Docs
+
+[EarthCPR API Document](http://ec2-3-34-227-48.ap-northeast-2.compute.amazonaws.com:8080/)
+
 ## CI/CD 파이프라인
 
 CI/CD 파이프라인은 다음과 같은 기술을 사용하여 구축되었습니다:
@@ -23,5 +27,3 @@ CI/CD 파이프라인은 다음과 같은 기술을 사용하여 구축되었습
 java -jar build/libs/earthcpr-0.0.1-SNAPSHOT.jar
 ```
 
-### API Docs
-[EarthCPR API Document](http://ec2-3-34-227-48.ap-northeast-2.compute.amazonaws.com:8080/)
