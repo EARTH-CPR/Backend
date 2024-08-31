@@ -24,4 +24,4 @@ java -jar build/libs/earthcpr-0.0.1-SNAPSHOT.jar
 ```
 
 ### API Docs
-[EarthCPR API Document]([링크](http://ec2-3-34-227-48.ap-northeast-2.compute.amazonaws.com:8080/))
+[EarthCPR API Document](http://ec2-3-34-227-48.ap-northeast-2.compute.amazonaws.com:8080/)
