@@ -8,6 +8,8 @@ import com.earthdefender.earthcpr.response.ErrorCode;
 import com.mysql.cj.Session;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,6 +25,7 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class ApiService {
+    private static final Logger log = LoggerFactory.getLogger(ApiService.class);
     private final WebClient webClient;
     private final UserRepository userRepository;
 
@@ -50,6 +53,7 @@ public class ApiService {
                     .apiKey(shinhanApiKey)
                     .build());
             // 로깅하기
+            log.info("postRequest Header: " + ((ShinhanApiDTO.RequestHeader) body).getHeader().toString());
         }
 
         return webClient.post()
@@ -74,7 +78,7 @@ public class ApiService {
                     .apiKey(shinhanApiKey)
                     .userKey(userRepository.findByLoginId(loginId).get().getUserKey())
                     .build());
-            // 로깅하기
+            log.info("postRequest Header: " + ((ShinhanApiDTO.RequestHeader) body).getHeader().toString());
         }
         return webClient.post()
                 .uri(uri)
