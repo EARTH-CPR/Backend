@@ -7,6 +7,8 @@ services:
     ports:
       - "8080:8080"
     restart: on-failure
+    environment:
+      - TZ=Asia/Seoul
 
 volumes:
   mysql_data:  # MySQL 데이터를 저장하는 볼륨 정의
