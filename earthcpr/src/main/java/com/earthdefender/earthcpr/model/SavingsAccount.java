@@ -26,8 +26,7 @@ public class SavingsAccount {
     private SavingsProduct savingProduct;
 
     private String accountNo;
-
-    private double additional_interest_rate;
+    private double additionalInterestRate;
     private String withdrawalAccountNo;
 
 }

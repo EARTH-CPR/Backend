@@ -25,5 +25,5 @@ public class DemandDepositAccount {
     @JoinColumn(name="deposit_product_id")
     private DemandDepositProduct depositProduct;
 
-    private String account_no;
+    private String accountNo;
 }

@@ -20,7 +20,7 @@ public class SavingsProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String accountTypeUniqueNo;
-    private BigDecimal interestInterestRate;
+    private BigDecimal interestRate;
 
     @ManyToMany
     @JoinTable(name = "savings_product_challenge")

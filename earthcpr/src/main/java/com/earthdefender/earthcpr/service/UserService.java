@@ -38,7 +38,6 @@ public class UserService {
                     .userNickname(userData.getUserNickname())
                     .userKey(tmp.getUserKey())
                     .build());
-            System.out.println(tmp);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
