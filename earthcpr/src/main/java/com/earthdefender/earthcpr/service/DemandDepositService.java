@@ -36,7 +36,6 @@ public class DemandDepositService {
 
     @Transactional
     public void createDemandDeposit(DemandDepositProductDTO.ProductData productData) {
-        System.out.println(productData);
         Mono<DemandDepositProductDTO.CreateResponse> responseMono = apiService.postRequest(
                 "/edu/demandDeposit/createDemandDeposit", productData.toCreateRequest(), DemandDepositProductDTO.CreateResponse.class
         );
@@ -48,7 +47,6 @@ public class DemandDepositService {
                     .accountDescription(response.getRec().getAccountDescription())
                     .accountTypeUniqueNo(response.getRec().getAccountTypeUniqueNo())
                     .build();
-            System.out.println(demandDepositProduct);
             demandDepositProductRepository.save(demandDepositProduct);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -138,7 +136,6 @@ public class DemandDepositService {
                 DemandDepositAccountDTO.ShinhanApiHistoryResponse.class,
                 historyData.getLoginId()
         );
-        System.out.println(historyData);
         try {
             DemandDepositAccountDTO.ShinhanApiHistoryResponse shinhanApiHistoryResponse = responseMono.block();
             List<DemandDepositAccountDTO.TransactionRecord> response = new ArrayList<>();

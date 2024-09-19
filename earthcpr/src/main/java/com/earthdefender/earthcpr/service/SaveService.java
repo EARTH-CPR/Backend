@@ -76,8 +76,6 @@ public class SaveService {
         if (userOptional.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND);
         }
-
-        System.out.println("productData: " + createAccountData);
         Optional<SavingsProduct> productOptional = savingsProductRepository.findByAccountTypeUniqueNo(createAccountData.getAccountTypeUniqueNo());
         if (productOptional.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND);
@@ -98,7 +96,6 @@ public class SaveService {
                     .additional_interest_rate(Double.parseDouble(response.getRec().getInterestRate()))
                     .withdrawalAccountNo(createAccountData.getWithdrawalAccountNo())
                     .build();
-            System.out.println("savingsAccount: " + savingsAccount);
             savingsAccountRepository.save(savingsAccount);
         } catch (Exception e) {
             e.printStackTrace();
@@ -229,7 +226,6 @@ public class SaveService {
     }
     //중도해지
     public SavingsAccountDTO.DeleteAccountResponseData deleteAccount(SavingsAccountDTO.InquireEarlyData inquireEarlyData) {
-        System.out.println("inquireEarlyData: " + inquireEarlyData);
         Mono<SavingsAccountDTO.ShinhanApiInquireEarlyResponse> responseMono1 = apiService.PostRequestUserKey(
                 "/edu/savings/inquireEarlyTerminationInterest",
                 inquireEarlyData.toInquireEarlyRequest(),
@@ -248,8 +244,6 @@ public class SaveService {
                     .depositTransactionSummary("우대금리 이자")
                     .withdrawalTransactionSummary("우대금리 이자")
                     .build();
-            System.out.println("SaveProductData: " + SaveProductData);
-            System.out.println("depositProductData: " + depositProductData);
             demandDepositService.transferDepositAccount(depositProductData);
 
 
